@@ -146,7 +146,7 @@
 .image-description {
     display: block;
     text-align: center;
-    font-size: 0.4em;
+    font-size: 0.7em;
     color: rgba(0, 0, 0, 0.5); 
     margin-top: 0.5em;
         }
@@ -212,8 +212,8 @@
                     <article>
                         <h1>${fileName.replace('-', ' ')}</h1>
                         <div class="author-info">
-                            <img src="${authorInfo.photo}" alt="Author Photo">
-                            <span>Por <a href="${authorInfo.profileUrl}">${authorInfo.name}</a></span>
+                            <img src="${authorInfo.photo}" alt="${authorInfo.name}">
+                            Por <span><a href="${authorInfo.profileUrl}">${authorInfo.name}</a></span>
                         </div>
                         <p class="post-meta">Publicado em ${postDate}</p>
                         <div>${postHTML}</div>
