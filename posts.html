@@ -115,14 +115,24 @@
             const postName = urlParams.get('file');
             if (!postName) return;
 
-            fetch(`./posts/${postName}.md`)
-                .then(response => response.text())
+            const postUrl = `https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/main/posts/${postName}.md`;
+
+            fetch(postUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Arquivo não encontrado");
+                    }
+                    return response.text();
+                })
                 .then(md => {
                     const postHTML = markdownToHTML(md);
                     const postContainer = document.getElementById('post-content');
                     postContainer.innerHTML = `<article><h1>${postName.replace('-', ' ')}</h1><div>${postHTML}</div></article>`;
                 })
-                .catch(error => console.log('Erro ao carregar o post:', error));
+                .catch(error => {
+                    const postContainer = document.getElementById('post-content');
+                    postContainer.innerHTML = `<p>Erro: ${error.message}</p>`;
+                });
         }
 
         loadPost();
