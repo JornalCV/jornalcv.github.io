@@ -133,6 +133,7 @@
                 .replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2">$1</a>')
                 .replace(/^\- (.*$)/gim, '<ul><li>$1</li></ul>')
                 .replace(/(\n)/g, '<br>')
+                
                 .replace(/^> \[!IMPORTANT\](.*$)/gim, '<div class="quote-card quote-important"><h3>IMPORTANT</h3><p>$1</p></div>')
                 .replace(/^> \[!NOTE\](.*$)/gim, '<div class="quote-card quote-note"><h3>NOTE</h3><p>$1</p></div>')
                 .replace(/^> \[!TIP\](.*$)/gim, '<div class="quote-card quote-tip"><h3>TIP</h3><p>$1</p></div>')
@@ -149,12 +150,45 @@
                 fetch(`./posts/${fileName}.md`)
                     .then(response => response.text())
                     .then(md => {
-                        const postHTML = markdownToHTML(md);
+                        const authorInfo = extractAuthorInfo(md);
+                        const postHTML = markdownToHTML(md.replace(/Info {[^}]+}/, ''));
                         const postContainer = document.getElementById('post-content');
-                        postContainer.innerHTML = `<article><h1>${fileName.replace('-', ' ')}</h1><div>${postHTML}</div></article>`;
+                        const postDate = getFileDate(`./posts/${fileName}.md`);
+                        postContainer.innerHTML = `
+                            <article>
+                                <h1>${fileName.replace('-', ' ')}</h1>
+                                <div class="author-info">
+                                    <img src="${authorInfo.photo}" alt="Author Photo">
+                                    <a href="${authorInfo.profileUrl}">Por @${authorInfo.name}</a>
+                                </div>
+                                <p>Publicado em ${postDate}</p>
+                                <div>${postHTML}</div>
+                            </article>
+                        `;
                     })
                     .catch(error => console.log('Erro ao carregar o post:', error));
             }
+        }
+
+        function extractAuthorInfo(md) {
+            const authorMatch = md.match(/Info {\s*AuthorName: ([^\n]+)\s*AuthorUrlProfile: ([^\n]+)\s*AuthorPhoto: ([^\n]+)\s*}/);
+            if (authorMatch) {
+                return {
+                    name: authorMatch[1].trim(),
+                    profileUrl: authorMatch[2].trim(),
+                    photo: authorMatch[3].trim()
+                };
+            }
+            return {
+                name: 'Desconhecido',
+                profileUrl: '#',
+                photo: 'https://via.placeholder.com/27'
+            };
+        }
+
+        function getFileDate(filePath) {
+            const fileStats = new Date(); // Aqui você pode usar um método para pegar a data de modificação do arquivo, como API do GitHub, ou uma data manual.
+            return fileStats.toLocaleDateString('pt-BR');
         }
 
         loadPost();
