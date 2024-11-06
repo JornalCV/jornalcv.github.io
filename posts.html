@@ -73,7 +73,6 @@
             max-width: 100%;
         }
     </style>
-    <!-- Incluindo a biblioteca marked.js -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
@@ -94,10 +93,9 @@
                 return;
             }
 
-            fetch(`./posts/${fileName}.md`)
+            fetch(`https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/main/posts/${fileName}.md`)
                 .then(response => response.text())
                 .then(md => {
-                    // Usando a biblioteca marked para converter o Markdown para HTML
                     const postHTML = marked(md);
                     document.getElementById('post-content').innerHTML = postHTML;
                 })
