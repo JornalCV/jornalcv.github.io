@@ -115,12 +115,12 @@
             const postName = urlParams.get('file');
             if (!postName) return;
 
-            const postUrl = `https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/main/posts/${postName}.md`;
+            const filePath = `https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/main/posts/${postName}.md`;
 
-            fetch(postUrl)
+            fetch(filePath)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error("Arquivo não encontrado");
+                        throw new Error('Post não encontrado');
                     }
                     return response.text();
                 })
@@ -131,7 +131,7 @@
                 })
                 .catch(error => {
                     const postContainer = document.getElementById('post-content');
-                    postContainer.innerHTML = `<p>Erro: ${error.message}</p>`;
+                    postContainer.innerHTML = `<p>Erro ao carregar o post: ${error.message}</p>`;
                 });
         }
 
