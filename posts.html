@@ -47,32 +47,43 @@
             margin-top: 1em;
             margin-bottom: 0.5em;
         }
+        h3 {
+            font-size: 1.6em;
+            color: #3f6375;
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+        }
         p {
             font-size: 1em;
             color: #001e2e;
             margin-bottom: 1.2em;
         }
-        .author-info {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1.5em; 
+        ul {
+            margin-left: 1.2em;
         }
-        .author-info img {
-            width: 27px; 
-            height: 27px; 
-            border-radius: 50%;
-            margin-right: 7px;
-            margin-bottom: 5px;
+        blockquote {
+            padding: 1em;
+            background-color: #e0f0f0;
+            border-left: 4px solid #557e6d;
+            margin-bottom: 1.2em;
         }
-        .author-info a {
-            color: #557e6d; 
-            text-decoration: none; 
+        blockquote p {
+            font-style: italic;
         }
-        .author-info a:hover {
-            text-decoration: underline; 
+        a {
+            color: #557e6d;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1em 0;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <header>
@@ -83,26 +94,35 @@
     <div id="post-content"></div>
 
     <script>
+        function markdownToHTML(md) {
+            let html = md
+                .replace(/^###### (.*$)/gim, '<h6>$1</h6>')
+                .replace(/^##### (.*$)/gim, '<h5>$1</h5>')
+                .replace(/^#### (.*$)/gim, '<h4>$1</h4>')
+                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                .replace(/\[([^\]]+)\]\((https?://[^\)]+)\)/gim, '<a href="$2" target="_blank">$1</a>')
+                .replace(/!\[([^\]]+)\]\((https?://[^\)]+)\)/gim, '<img src="$2" alt="$1">')
+                .replace(/^\- (.*$)/gim, '<ul><li>$1</li></ul>')
+                .replace(/\n/g, '<br/>')
+                .replace(/^> (.*$)/gim, '<blockquote><p>$1</p></blockquote>');
+            return html;
+        }
+
         function loadPost() {
             const urlParams = new URLSearchParams(window.location.search);
-            const fileName = urlParams.get('file');
+            const postName = urlParams.get('file');
+            if (!postName) return;
 
-            if (!fileName) {
-                document.getElementById('post-content').innerHTML = "<p>Post não encontrado.</p>";
-                return;
-            }
-
-            fetch(`./posts/${fileName}.md`)
+            fetch(`./posts/${postName}.md`)
                 .then(response => response.text())
                 .then(md => {
-                    const htmlContent = marked(md);
+                    const postHTML = markdownToHTML(md);
                     const postContainer = document.getElementById('post-content');
-                    postContainer.innerHTML = htmlContent;
+                    postContainer.innerHTML = `<article><h1>${postName.replace('-', ' ')}</h1><div>${postHTML}</div></article>`;
                 })
-                .catch(error => {
-                    document.getElementById('post-content').innerHTML = "<p>Erro ao carregar o post.</p>";
-                    console.log('Erro ao carregar o post:', error);
-                });
+                .catch(error => console.log('Erro ao carregar o post:', error));
         }
 
         loadPost();
