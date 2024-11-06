@@ -55,21 +55,26 @@
         .author-info {
             display: flex;
             align-items: center;
-            margin-bottom: 1.5em; 
+            justify-content: flex-start;
+            margin-bottom: 0.5em;
         }
         .author-info img {
             width: 27px; 
             height: 27px; 
             border-radius: 50%;
-            margin-right: 7px;
-            margin-bottom: 5px;
+            margin-right: 10px;
         }
         .author-info a {
             color: #557e6d; 
             text-decoration: none; 
+            font-weight: bold;
         }
         .author-info a:hover {
             text-decoration: underline; 
+        }
+        .post-meta {
+            font-size: 0.9em;
+            color: #555;
         }
         .quote-card {
             padding: 1em;
@@ -159,9 +164,9 @@
                                 <h1>${fileName.replace('-', ' ')}</h1>
                                 <div class="author-info">
                                     <img src="${authorInfo.photo}" alt="Author Photo">
-                                    <a href="${authorInfo.profileUrl}">Por @${authorInfo.name}</a>
+                                    <a href="${authorInfo.profileUrl}">${authorInfo.name}</a>
                                 </div>
-                                <p>Publicado em ${postDate}</p>
+                                <p class="post-meta">Publicado em ${postDate}</p>
                                 <div>${postHTML}</div>
                             </article>
                         `;
