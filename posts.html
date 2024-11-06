@@ -131,14 +131,14 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        img {
+        banner {
     display: block;
     margin: 0 auto;
     width: 100%;
     max-width: 100%;
         }
 
-.image-description {
+.img-description {
     display: block;
     text-align: center;
     font-size: 0.4em;
@@ -167,7 +167,7 @@
         .replace(/\*\*([^*]+)\*\*/gim, '<strong>$1</strong>')
         .replace(/\*([^*]+)\*/gim, '<em>$1</em>')
         .replace(/\!\[([^\]]+)\]\(([^)]+)\)/gim, (match, p1, p2) => {
-            return `<div style="text-align: center;"><img src="${p2}" alt="${p1}"><span class="image-description">${p1}</span></div>`;
+            return `<div style="text-align: center;"><banner src="${p2}" alt="${p1}"><span class="image-description">${p1}</span></div>`;
         })
         .replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2">$1</a>')
         .replace(/^\- (.*$)/gim, '<ul><li>$1</li></ul>')
@@ -198,7 +198,7 @@
                             <article>
                                 <h1>${fileName.replace('-', ' ')}</h1>
                                 <div class="author-info">
-                                    <img src="${authorInfo.photo}" alt="Author Photo">
+                                    <img src="${authorInfo.photo}" alt="${authorInfo.name}">
                                     <span>Por <a href="${authorInfo.profileUrl}">${authorInfo.name}</a></span>
                                 </div>
                                 <p class="post-meta">Publicado em ${postDate}</p>
