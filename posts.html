@@ -151,33 +151,38 @@
             margin-top: 0.5em;
         }
         .toolbar {
-            position: fixed;
-            top: 5;
-            left: 0;
-            right: 0;
-            background-color: rgba(000, 000, 000, 0.5);
-            backdrop-filter: blur(25px);
-            padding: 10px 20px;
-            border-radius: 25px;
-            display: flex;
-            justify-content: center;
-            align-items: left;
-            z-index: 10;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(25px);
+    padding: 10px 20px;
+    border-radius: 25px;
+    border: 2px solid rgba(169, 169, 169, 0.5); 
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 10;
         }
+
         .toolbar h1 {
-            margin: 0;
-            font-size: 1.5em;
-            color: #3f6375;
+    margin: 0;
+    font-size: 1.5em;
+    color: #3f6375;
         }
+
         .toolbar .experimental {
-            font-size: 0.7em;
-            color: #fff;
-            background-color: #557e6d;
-            padding: 0.3em 0.6em;
-            border-radius: 50px;
-            margin-left: 10px;
-            vertical-align: middle;
+    font-size: 0.7em;
+    color: #fff;
+    background-color: #557e6d;
+    padding: 0.3em 0.6em;
+    border-radius: 50px;
+    margin-left: 10px;
+    vertical-align: middle;
         }
+
 
         .fade-in {
             animation: fadeInUp 1s ease-out forwards;
