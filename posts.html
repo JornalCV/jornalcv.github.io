@@ -76,13 +76,13 @@
             border-radius: 8px;
             margin: 1em 0;
             font-weight: bold;
-            color: #fff;
             display: flex;
             flex-direction: column;
         }
         .quote-card h3 {
             margin: 0;
             font-size: 1.2em;
+            font-weight: bold;
         }
         .quote-card p {
             margin-top: 0.5em;
@@ -120,7 +120,7 @@
 
     <script>
         function markdownToHTML(md) {
-            const html = md
+            let html = md
                 .replace(/^###### (.*$)/gim, '<h6>$1</h6>')
                 .replace(/^##### (.*$)/gim, '<h5>$1</h5>')
                 .replace(/^#### (.*$)/gim, '<h4>$1</h4>')
@@ -138,6 +138,7 @@
                 .replace(/^> \[!TIP\](.*$)/gim, '<div class="quote-card quote-tip"><h3>TIP</h3><p>$1</p></div>')
                 .replace(/^> \[!WARNING\](.*$)/gim, '<div class="quote-card quote-warning"><h3>WARNING</h3><p>$1</p></div>')
                 .replace(/^> (.*$)/gim, '<div class="quote-card quote-default"><h3>Citação</h3><p>$1</p></div>');
+            
             return html;
         }
 
