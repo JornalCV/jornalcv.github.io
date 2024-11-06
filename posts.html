@@ -79,7 +79,7 @@
         <span class="experimental">Experimental</span>
     </header>
 
-    <div id="posts-container"></div>
+    <div id="post-content"></div>
 
     <script>
         function markdownToHTML(md) {
@@ -91,37 +91,28 @@
             return html;
         }
 
-        function loadPost(postName) {
-            fetch(`./posts/${postName}.md`)
-                .then(response => response.text())
-                .then(md => {
-                    const postHTML = markdownToHTML(md);
-                    const postContainer = document.getElementById('posts-container');
-                    postContainer.innerHTML = `<article><h1>${postName.replace('-', ' ')}</h1><div>${postHTML}</div></article>`;
-                })
-                .catch(error => console.log('Erro ao carregar o post:', error));
-        }
-
-        function loadPostsList() {
-            fetch('https://api.github.com/repos/JornalCV/jornalcv.github.io/contents/posts')
-                .then(response => response.json())
-                .then(data => {
-                    const postsContainer = document.getElementById('posts-container');
-                    data.forEach(file => {
-                        if (file.name.endsWith('.md')) {
-                            const postLink = document.createElement('a');
-                            postLink.href = `./page/post/${file.name.replace('.md', '')}`;
-                            postLink.innerText = file.name.replace('.md', '').replace('-', ' ');
-                            postLink.style.display = 'block';
-                            postLink.style.marginBottom = '1em';
-                            postsContainer.appendChild(postLink);
-                        }
+        function loadPost() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const postName = urlParams.get('file'); // Pega o valor de "file" na URL
+            if (postName) {
+                fetch(`./posts/${postName}.md`)
+                    .then(response => response.text())
+                    .then(md => {
+                        const postHTML = markdownToHTML(md);
+                        const postContainer = document.getElementById('post-content');
+                        postContainer.innerHTML = `<article><h1>${postName.replace('-', ' ')}</h1><div>${postHTML}</div></article>`;
+                    })
+                    .catch(error => {
+                        const postContainer = document.getElementById('post-content');
+                        postContainer.innerHTML = `<p>Erro ao carregar o post: ${error}</p>`;
                     });
-                })
-                .catch(error => console.log('Erro ao carregar lista de posts:', error));
+            } else {
+                const postContainer = document.getElementById('post-content');
+                postContainer.innerHTML = `<p>Por favor, forneça um arquivo para exibir.</p>`;
+            }
         }
 
-        loadPostsList();
+        loadPost();
     </script>
 </body>
 </html>
