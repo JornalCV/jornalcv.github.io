@@ -78,6 +78,34 @@
             font-style: italic;
             margin: 1em 0;
         }
+        .quote-important {
+            border-left: 5px solid #f44336;
+            background-color: #ffe5e5;
+            padding-left: 1em;
+            color: #f44336;
+            font-weight: bold;
+        }
+        .quote-note {
+            border-left: 5px solid #2196f3;
+            background-color: #e3f2fd;
+            padding-left: 1em;
+            color: #2196f3;
+            font-weight: bold;
+        }
+        .quote-tip {
+            border-left: 5px solid #4caf50;
+            background-color: #e8f5e9;
+            padding-left: 1em;
+            color: #4caf50;
+            font-weight: bold;
+        }
+        .quote-warning {
+            border-left: 5px solid #ff9800;
+            background-color: #fff3e0;
+            padding-left: 1em;
+            color: #ff9800;
+            font-weight: bold;
+        }
         ul {
             padding-left: 2em;
         }
@@ -106,8 +134,11 @@
                 .replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2">$1</a>')
                 .replace(/^\- (.*$)/gim, '<ul><li>$1</li></ul>')
                 .replace(/(\n)/g, '<br>')
-                .replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>')
-                .replace(/^\* (.*$)/gim, '<ul><li>$1</li></ul>');
+                .replace(/^> \[!IMPORTANT\](.*$)/gim, '<blockquote class="quote-important">$1</blockquote>')
+                .replace(/^> \[!NOTE\](.*$)/gim, '<blockquote class="quote-note">$1</blockquote>')
+                .replace(/^> \[!TIP\](.*$)/gim, '<blockquote class="quote-tip">$1</blockquote>')
+                .replace(/^> \[!WARNING\](.*$)/gim, '<blockquote class="quote-warning">$1</blockquote>')
+                .replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
             return html;
         }
 
