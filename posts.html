@@ -84,6 +84,8 @@
             padding-left: 1em;
             color: #f44336;
             font-weight: bold;
+            padding: 10px;
+            margin: 10px 0;
         }
         .quote-note {
             border-left: 5px solid #2196f3;
@@ -91,6 +93,8 @@
             padding-left: 1em;
             color: #2196f3;
             font-weight: bold;
+            padding: 10px;
+            margin: 10px 0;
         }
         .quote-tip {
             border-left: 5px solid #4caf50;
@@ -98,6 +102,8 @@
             padding-left: 1em;
             color: #4caf50;
             font-weight: bold;
+            padding: 10px;
+            margin: 10px 0;
         }
         .quote-warning {
             border-left: 5px solid #ff9800;
@@ -105,6 +111,8 @@
             padding-left: 1em;
             color: #ff9800;
             font-weight: bold;
+            padding: 10px;
+            margin: 10px 0;
         }
         ul {
             padding-left: 2em;
@@ -121,7 +129,7 @@
 
     <script>
         function markdownToHTML(md) {
-            const html = md
+            let html = md
                 .replace(/^###### (.*$)/gim, '<h6>$1</h6>')
                 .replace(/^##### (.*$)/gim, '<h5>$1</h5>')
                 .replace(/^#### (.*$)/gim, '<h4>$1</h4>')
@@ -138,7 +146,7 @@
                 .replace(/^> \[!NOTE\](.*$)/gim, '<blockquote class="quote-note">$1</blockquote>')
                 .replace(/^> \[!TIP\](.*$)/gim, '<blockquote class="quote-tip">$1</blockquote>')
                 .replace(/^> \[!WARNING\](.*$)/gim, '<blockquote class="quote-warning">$1</blockquote>')
-                .replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
+                .replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>'); // Padrão para citações simples
             return html;
         }
 
