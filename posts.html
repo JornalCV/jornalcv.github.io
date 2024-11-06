@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <meta name="color-scheme" content="light dark">
     <title>Jornal CV</title>
     <style>
         @font-face {
@@ -19,140 +18,61 @@
             max-width: 800px;
             margin: auto;
         }
-        header {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 1em 0;
-        }
-        h1 {
-            font-size: 1.5em; 
-            color: #3f6375;
-            margin-right: 10px;
-            margin-bottom: 0;
-            font-weight: normal; 
-        }
-        .experimental {
-            font-size: 0.7em; 
-            color: #fff;
-            background-color: #557e6d; 
-            padding: 0.3em 0.6em;
-            border-radius: 50px;
-            margin-top: 11px;
-            vertical-align: middle;
-        }
-        h2 {
-            font-size: 1.8em;
-            color: #3f6375;
-            margin-top: 1em;
-            margin-bottom: 0.5em;
-        }
-        .author-info {
-            display: flex;
-            align-items: center;
-            margin-top: 0.5em;
-            margin-bottom: 1.5em;
-        }
-        .author-info img {
-            width: 27px;
-            height: 27px;
-            border-radius: 50%;
-            margin-right: 7px;
-        }
-        .author-info a {
-            color: #557e6d;
-            text-decoration: none;
-        }
-        .author-info a:hover {
-            text-decoration: underline;
-        }
-        .author-info .date {
-            font-size: 0.9em;
-            color: #888;
-            margin-left: 10px;
-        }
-        .alert {
+        .quote {
             padding: 1em;
             border-radius: 8px;
             margin: 1em 0;
             color: #fff;
         }
-        .alert p {
-            margin: 0.5em 0 0;
-        }
-        .alert.important { background-color: #6c3fb9; }
-        .alert.note { background-color: #3f6fb9; }
-        .alert.tip { background-color: #3fb97e; }
-        .alert.warning { background-color: #b9b63f; }
-        .alert.default { background-color: #ccc; color: #333; }
-        .alert strong {
-            display: block;
+        .quote.important { background-color: #6a1b9a; }  /* Roxo */
+        .quote.note { background-color: #1e88e5; }      /* Azul */
+        .quote.tip { background-color: #388e3c; }       /* Verde */
+        .quote.warning { background-color: #fbc02d; }   /* Amarelo */
+        .quote.default { background-color: #b0bec5; }   /* Cinza */
+        .quote-title {
             font-weight: bold;
             margin-bottom: 0.5em;
-        }
-        pre code {
-            display: block;
-            background-color: #f1f1f1;
-            padding: 1em;
-            border-radius: 8px;
-            font-family: monospace;
-            position: relative;
-        }
-        .copy-btn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            padding: 5px 10px;
-            background-color: #557e6d;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.8em;
-        }
-        .copy-btn:hover {
-            background-color: #3f6375;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Jornal CV</h1>
-        <span class="experimental">Experimental</span>
-    </header>
+    <h1>Jornal CV</h1>
     <div id="post-content"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
-        function loadPost() {
-            const queryParams = new URLSearchParams(window.location.search);
-            const fileName = queryParams.get('file');
-            if (!fileName) return;
+        async function loadPost() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fileName = urlParams.get("file");
+            const response = await fetch(`./posts/${fileName}.md`);
+            let content = await response.text();
 
-            fetch(`./posts/${fileName}.md`)
-                .then(response => response.text())
-                .then(content => {
-                    const processedContent = content
-                        .replace(/^> \[!IMPORTANT\](.*)$/gm, '<div class="alert important"><strong>Importante</strong><p>$1</p></div>')
-                        .replace(/^> \[!NOTE\](.*)$/gm, '<div class="alert note"><strong>Nota</strong><p>$1</p></div>')
-                        .replace(/^> \[!TIP\](.*)$/gm, '<div class="alert tip"><strong>Dica</strong><p>$1</p></div>')
-                        .replace(/^> \[!WARNING\](.*)$/gm, '<div class="alert warning"><strong>Aviso</strong><p>$1</p></div>')
-                        .replace(/^> (.*)$/gm, '<div class="alert default"><p>$1</p></div>');
-                    document.getElementById('post-content').innerHTML = marked(processedContent);
+            content = content.replace(/```([\s\S]*?)```/g, match => {
+                return `<div class="code-block"><pre>${match.replace(/```/g, '')}</pre><button class="copy-btn">Copiar</button></div>`;
+            });
+
+            content = content.replace(/> \[!(IMPORTANT|NOTE|TIP|WARNING)\]\s+([\s\S]*?)(?=\n\n|$)/g, (match, type, text) => {
+                const typeClass = type.toLowerCase();
+                return `<div class="quote ${typeClass}"><div class="quote-title">${type}</div><div>${text}</div></div>`;
+            });
+
+            content = content.replace(/(^|\n)> (.*)/g, (match, _, text) => {
+                return `<div class="quote default"><div>${text}</div></div>`;
+            });
+
+            document.getElementById("post-content").innerHTML = content;
+
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', e => {
+                    const code = e.target.previousElementSibling.innerText;
+                    navigator.clipboard.writeText(code).then(() => {
+                        e.target.innerText = "Copiado!";
+                        setTimeout(() => (e.target.innerText = "Copiar"), 2000);
+                    }).catch(err => {
+                        console.error("Erro ao copiar o código: ", err);
+                    });
                 });
+            });
         }
-
-        document.getElementById('post-content').addEventListener('click', (e) => {
-            if (e.target.classList.contains('copy-btn')) {
-                const codeText = e.target.previousElementSibling.innerText;
-                navigator.clipboard.writeText(codeText).then(() => {
-                    e.target.innerText = "Copiado";
-                    setTimeout(() => (e.target.innerText = "Copiar"), 2000);
-                }).catch(err => {
-                    console.error("Erro ao copiar o código: ", err);
-                });
-            }
-        });
 
         loadPost();
     </script>
