@@ -190,31 +190,42 @@
 
 
         function loadPost() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const fileName = urlParams.get('file');
-            if (fileName) {
-                fetch(`./posts/${fileName}.md`)
-                    .then(response => response.text())
-                    .then(md => {
-                        const authorInfo = extractAuthorInfo(md);
-                        const postHTML = markdownToHTML(md.replace(/Info {[^}]+}/, ''));
-                        const postContainer = document.getElementById('post-content');
-                        const postDate = getFileDate(`./posts/${fileName}.md`);
-                        postContainer.innerHTML = `
-                            <article>
-                                <h1>${fileName.replace('-', ' ')}</h1>
-                                <div class="author-info">
-                                    <img src="${authorInfo.photo}" alt="${authorInfo.name}">
-                                    <span>Por <a href="${authorInfo.profileUrl}">${authorInfo.name}</a></span>
-                                </div>
-                                <p class="post-meta">Publicado em ${postDate}</p>
-                                <div>${postHTML}</div>
-                            </article>
-                        `;
-                    })
-                    .catch(error => console.log('Erro ao carregar o post:', error));
-            }
+    const urlParams = new URLSearchParams(window.location.search);
+    const fileName = urlParams.get('file');
+    
+    if (fileName) {
+        fetch(`./posts/${fileName}.md`)
+            .then(response => {
+                if (!response.ok) { 
+                    window.location.href = "404.html";
+                    throw new Error("Arquivo não encontrado.");
+                }
+                return response.text();
+            })
+            .then(md => {
+                const authorInfo = extractAuthorInfo(md);
+                const postHTML = markdownToHTML(md.replace(/Info {[^}]+}/, ''));
+                const postContainer = document.getElementById('post-content');
+                const postDate = getFileDate(`./posts/${fileName}.md`);
+                
+                postContainer.innerHTML = `
+                    <article>
+                        <h1>${fileName.replace('-', ' ')}</h1>
+                        <div class="author-info">
+                            <img src="${authorInfo.photo}" alt="Author Photo">
+                            <span>Por <a href="${authorInfo.profileUrl}">${authorInfo.name}</a></span>
+                        </div>
+                        <p class="post-meta">Publicado em ${postDate}</p>
+                        <div>${postHTML}</div>
+                    </article>
+                `;
+            })
+            .catch(error => console.log('Erro ao carregar o post:', error));
+    } else {
+        window.location.href = "404.html";
+           }
         }
+
 
         function extractAuthorInfo(md) {
             const authorMatch = md.match(/Info {\s*AuthorName: ([^\n]+)\s*AuthorUrlProfile: ([^\n]+)\s*AuthorPhoto: ([^\n]+)\s*}/);
