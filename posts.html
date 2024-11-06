@@ -56,7 +56,7 @@
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            margin-bottom: 0.5em;
+            margin-bottom: 0.2em; /* Diminuindo o espaço entre as informações do autor */
         }
         .author-info img {
             width: 27px; 
@@ -75,6 +75,10 @@
         .post-meta {
             font-size: 0.9em;
             color: #555;
+            margin-top: 0.2em; /* Ajustando a distância entre a data e o autor */
+        }
+        .post-meta span {
+            font-weight: bold;
         }
         .quote-card {
             padding: 1em;
@@ -164,7 +168,8 @@
                                 <h1>${fileName.replace('-', ' ')}</h1>
                                 <div class="author-info">
                                     <img src="${authorInfo.photo}" alt="Author Photo">
-                                    <a href="${authorInfo.profileUrl}">${authorInfo.name}</a>
+                                    <a href="${authorInfo.profileUrl}">${authorInfo.name}</a> 
+                                    <span>Por</span>
                                 </div>
                                 <p class="post-meta">Publicado em ${postDate}</p>
                                 <div>${postHTML}</div>
