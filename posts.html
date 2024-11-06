@@ -26,16 +26,16 @@
             padding: 1em 0;
         }
         h1 {
-            font-size: 1.5em; 
+            font-size: 1.5em;
             color: #3f6375;
             margin-right: 10px;
             margin-bottom: 0;
-            font-weight: normal; 
+            font-weight: normal;
         }
         .experimental {
-            font-size: 0.7em; 
+            font-size: 0.7em;
             color: #fff;
-            background-color: #557e6d; 
+            background-color: #557e6d;
             padding: 0.3em 0.6em;
             border-radius: 50px;
             margin-top: 11px;
@@ -55,30 +55,26 @@
         .author-info {
             display: flex;
             align-items: center;
-            justify-content: flex-start;
-            margin-bottom: 0.2em; /* Diminuindo o espaço entre as informações do autor */
+            margin-bottom: 0.2em;
         }
         .author-info img {
-            width: 27px; 
-            height: 27px; 
+            width: 27px;
+            height: 27px;
             border-radius: 50%;
             margin-right: 10px;
         }
-        .author-info a {
-            color: #557e6d; 
-            text-decoration: none; 
+        .author-info span, .author-info a {
+            color: #557e6d;
+            text-decoration: none;
             font-weight: bold;
         }
         .author-info a:hover {
-            text-decoration: underline; 
+            text-decoration: underline;
         }
         .post-meta {
             font-size: 0.9em;
             color: #555;
-            margin-top: 0.2em; /* Ajustando a distância entre a data e o autor */
-        }
-        .post-meta span {
-            font-weight: bold;
+            margin-top: 0.2em;
         }
         .quote-card {
             padding: 1em;
@@ -117,6 +113,24 @@
             background-color: #e0e0e0;
             color: #333;
         }
+        .code-block {
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            padding: 10px;
+            font-family: monospace;
+            position: relative;
+        }
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #557e6d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -142,13 +156,13 @@
                 .replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2">$1</a>')
                 .replace(/^\- (.*$)/gim, '<ul><li>$1</li></ul>')
                 .replace(/(\n)/g, '<br>')
-                
                 .replace(/^> \[!IMPORTANT\](.*$)/gim, '<div class="quote-card quote-important"><h3>IMPORTANT</h3><p>$1</p></div>')
                 .replace(/^> \[!NOTE\](.*$)/gim, '<div class="quote-card quote-note"><h3>NOTE</h3><p>$1</p></div>')
                 .replace(/^> \[!TIP\](.*$)/gim, '<div class="quote-card quote-tip"><h3>TIP</h3><p>$1</p></div>')
                 .replace(/^> \[!WARNING\](.*$)/gim, '<div class="quote-card quote-warning"><h3>WARNING</h3><p>$1</p></div>')
-                .replace(/^> (.*$)/gim, '<div class="quote-card quote-default"><h3>Citação</h3><p>$1</p></div>');
-            
+                .replace(/^> (.*$)/gim, '<div class="quote-card quote-default"><h3>Citação</h3><p>$1</p></div>')
+                .replace(/```([^`]+)```/gim, '<div class="code-block"><button class="copy-button">Copiar</button><pre><code>$1</code></pre></div>');
+
             return html;
         }
 
@@ -168,8 +182,7 @@
                                 <h1>${fileName.replace('-', ' ')}</h1>
                                 <div class="author-info">
                                     <img src="${authorInfo.photo}" alt="Author Photo">
-                                    <a href="${authorInfo.profileUrl}">${authorInfo.name}</a> 
-                                    <span>Por</span>
+                                    <span>Por <a href="${authorInfo.profileUrl}">${authorInfo.name}</a></span>
                                 </div>
                                 <p class="post-meta">Publicado em ${postDate}</p>
                                 <div>${postHTML}</div>
@@ -197,9 +210,21 @@
         }
 
         function getFileDate(filePath) {
-            const fileStats = new Date(); // Aqui você pode usar um método para pegar a data de modificação do arquivo, como API do GitHub, ou uma data manual.
+            const fileStats = new Date();
             return fileStats.toLocaleDateString('pt-BR');
         }
+
+        document.addEventListener("click", function(e) {
+            if (e.target && e.target.classList.contains("copy-button")) {
+                const codeBlock = e.target.nextElementSibling.innerText;
+                navigator.clipboard.writeText(codeBlock).then(() => {
+                    e.target.innerText = "Copiado";
+                    setTimeout(() => (e.target.innerText = "Copiar"), 2000);
+                }).catch(err => {
+                    console.error("Erro ao copiar o código: ", err);
+                });
+            }
+        });
 
         loadPost();
     </script>
