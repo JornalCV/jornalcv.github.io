@@ -41,7 +41,7 @@
             margin-top: 11px;
             vertical-align: middle;
         }
-        h2, h3, h4, h5, h6 {
+        h2 {
             font-size: 1.8em;
             color: #3f6375;
             margin-top: 1em;
@@ -52,25 +52,24 @@
             color: #001e2e;
             margin-bottom: 1.2em;
         }
-        ul {
-            margin-left: 1.5em;
+        .author-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5em; 
         }
-        blockquote {
-            border-left: 4px solid #557e6d;
-            padding-left: 1em;
-            font-style: italic;
-            color: #555;
-            margin: 1em 0;
+        .author-info img {
+            width: 27px; 
+            height: 27px; 
+            border-radius: 50%;
+            margin-right: 7px;
+            margin-bottom: 5px;
         }
-        a {
-            color: #557e6d;
-            text-decoration: none;
+        .author-info a {
+            color: #557e6d; 
+            text-decoration: none; 
         }
-        a:hover {
-            text-decoration: underline;
-        }
-        img {
-            max-width: 100%;
+        .author-info a:hover {
+            text-decoration: underline; 
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -89,19 +88,20 @@
             const fileName = urlParams.get('file');
 
             if (!fileName) {
-                document.getElementById('post-content').innerHTML = '<p>Arquivo não encontrado.</p>';
+                document.getElementById('post-content').innerHTML = "<p>Post não encontrado.</p>";
                 return;
             }
 
-            fetch(`https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/main/posts/${fileName}.md`)
+            fetch(`./posts/${fileName}.md`)
                 .then(response => response.text())
                 .then(md => {
-                    const postHTML = marked(md);
-                    document.getElementById('post-content').innerHTML = postHTML;
+                    const htmlContent = marked(md);
+                    const postContainer = document.getElementById('post-content');
+                    postContainer.innerHTML = htmlContent;
                 })
                 .catch(error => {
+                    document.getElementById('post-content').innerHTML = "<p>Erro ao carregar o post.</p>";
                     console.log('Erro ao carregar o post:', error);
-                    document.getElementById('post-content').innerHTML = '<p>Erro ao carregar o conteúdo do post.</p>';
                 });
         }
 
