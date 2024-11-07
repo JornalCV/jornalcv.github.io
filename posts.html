@@ -525,6 +525,37 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', updateToolbar);
 });
 
+    function loadPost() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fileName = urlParams.get('file');
+    
+    if (fileName) {
+        fetch(`./posts/${fileName}.md`)
+            .then(response => {
+                if (!response.ok) { 
+                    window.location.href = "404.html";
+                    throw new Error("Arquivo não encontrado.");
+                }
+                return response.text();
+            })
+            .then(md => {
+                const authorInfo = extractAuthorInfo(md);
+                const postHTML = markdownToHTML(md.replace(/Info {[^}]+}/, ''));
+                const postContainer = document.getElementById('post-content');
+                const postDate = getFileDate(`./posts/${fileName}.md`);
+                
+                postContainer.innerHTML = `
+                    <article class="fade-in">
+                        <h1>${fileName.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase())}</h1>
+                        <div class="author-info">
+                            <img src="#"> <!-- Atualize com URL do autor -->
+                            <a href="#">Autor: Nome</a>
+                        </div>
+                        <div>${postHTML}</div>
+                    </article>`;
+            });
+    }
+    }
 loadPost();
 </script>
 <script>
