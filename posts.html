@@ -7,11 +7,17 @@
     <title>Jornal CV</title>
     <style>
         @font-face {
-            font-family: 'GoogleSans-Rounded';
-            src: url('https://meetfed.github.io/home/fonts/GoogleSans-Rounded.woff2') format('woff2');
+            font-family: 'GoogleSansFlex';
+            src: url('https://github.com/JornalCV/jornalcv.github.io/raw/refs/heads/main/font/GoogleSansFlex-Regular.ttf') format('truetype');
         }
+
+        @font-face {
+            font-family: 'FluentEmoji';
+            src: url('https://github.com/JornalCV/jornalcv.github.io/raw/refs/heads/main/font/FluentEmoji.ttf') format('truetype');
+        }
+
         body {
-            font-family: 'GoogleSans-Rounded', sans-serif;
+            font-family: 'GoogleSansFlex', sans-serif;
             padding: 1.5em;
             background-color: #f6fafe;
             color: #181c20;
@@ -20,18 +26,21 @@
             margin: auto;
             overflow-x: hidden;
         }
+
         header {
             display: flex;
             align-items: center;
             justify-content: flex-start;
             padding: 1em 0;
         }
+
         h1 {
             font-size: 1.9em;
             color: #3f6375;
             margin-right: 10px;
             margin-bottom: 0;
         }
+
         .experimental {
             font-size: 0.7em;
             color: #fff;
@@ -41,41 +50,49 @@
             margin-top: 0px;
             vertical-align: middle;
         }
+
         h2 {
             font-size: 1.5em;
             color: #3f6375;
             margin-top: 1em;
             margin-bottom: 0.5em;
         }
+
         p {
             font-size: 1em;
             color: #001e2e;
             margin-bottom: 1.2em;
         }
+
         .author-info {
             display: flex;
             align-items: center;
             margin-bottom: 0.2em;
         }
+
         .author-info img {
             width: 27px;
             height: 27px;
             border-radius: 50%;
             margin-right: 10px;
         }
+
         .author-info span, .author-info a {
             color: #557e6d;
             text-decoration: none;
             font-weight: bold;
         }
+
         .author-info a:hover {
             text-decoration: underline;
         }
+
         .post-meta {
             font-size: 0.9em;
             color: #555;
             margin-top: 0.2em;
         }
+
         .quote-card {
             padding: 1em;
             border-radius: 8px;
@@ -84,42 +101,51 @@
             display: flex;
             flex-direction: column;
         }
+
         .quote-card h3 {
             margin: 0;
             font-size: 1.2em;
             font-weight: bold;
         }
+
         .quote-card p {
             margin-top: 0.5em;
             font-size: 1em;
         }
+
         .quote-important {
             background-color: #9c27b0;
             color: #fff;
         }
+
         .quote-note {
             background-color: #2196f3;
             color: #fff;
         }
+
         .quote-tip {
             background-color: #4caf50;
             color: #fff;
         }
+
         .quote-warning {
             background-color: #ff9800;
             color: #fff;
         }
+
         .quote-default {
             background-color: #e0e0e0;
             color: #333;
         }
+
         .code-block {
             background-color: #f0f0f0;
             border-radius: 5px;
             padding: 10px;
-            font-family: monospace;
+            font-family: 'Courier New', monospace;
             position: relative;
         }
+
         .copy-button {
             position: absolute;
             top: 10px;
@@ -131,18 +157,14 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
         .content img {
             display: block;
             margin: 0 auto;
             width: 100%;
             max-width: 100%;
         }
-        .author-info img {
-            width: 27px;
-            height: 27px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
+
         .image-description {
             display: block;
             text-align: center;
@@ -150,6 +172,7 @@
             color: rgba(0, 0, 0, 0.5); 
             margin-top: 0.5em;
         }
+
         .toolbar {
             position: fixed;
             top: 10px;
@@ -183,12 +206,9 @@
             vertical-align: middle;
         }
 
-
         body {
             padding-top: 60px;
         }
-
-
 
         .fade-in {
             animation: fadeInUp 1s ease-out forwards;
@@ -204,16 +224,20 @@
                 transform: translateY(0);
             }
         }
+
         .post-content > article {
             opacity: 0;
             animation: fadeInUp 0.5s ease-out forwards;
         }
+
         .post-content > article:nth-child(1) {
             animation-delay: 0.3s;
         }
+
         .post-content > article:nth-child(2) {
             animation-delay: 0.6s;
         }
+
         .post-content > article:nth-child(3) {
             animation-delay: 0.10s;
         }
