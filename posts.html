@@ -216,9 +216,6 @@
             color: #151616;
             opacity: 0.8;
         }
-        img {
-            border-radius: 25px;
-        }
 
         body {
             padding-top: 60px;
@@ -287,60 +284,85 @@
                 .replace(/^> \[!TIP\](.*$)/gim, '<div class="quote-card quote-tip"><h3>TIP</h3><p>$1</p></div>')
                 .replace(/^> \[!WARNING\](.*$)/gim, '<div class="quote-card quote-warning"><h3>WARNING</h3><p>$1</p></div>')
                 .replace(/^> (.*$)/gim, '<div class="quote-card quote-default"><h3>Citação</h3><p>$1</p></div>')
-                .replace(/```([^`]+)```/gim, '<div class="code-block"><button class="copy-button">Copiar</button><pre><code>$1</code></pre></div>')
-                .replace(/Info {([^}]+)}/gim, (match, p1) => {
-                    const info = p1.split('\n').reduce((acc, line) => {
-                        const [key, value] = line.split(':').map(item => item.trim());
-                        acc[key] = value;
-                        return acc;
-                    }, {});
-                    return `<div class="author-info">
-                                <img src="${info.AuthorPhoto}" alt="${info.AuthorName}">
-                                <span>Por <a href="${info.AuthorUrlProfile}">${info.AuthorName}</a></span>
-                            </div>`;
-                });
-            return html;
-        }
+                .replace(/```([^`]+)```/gim, '<div class="code-block"><button class="copy-button">Copiar</button><pre><code>$1</code></pre></div>');
 
-        function loadPost() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const fileName = urlParams.get('file');
-            
-            if (fileName) {
-                fetch(`./posts/${fileName}.md`)
-                    .then(response => {
-                        if (!response.ok) { 
-                            window.location.href = "404.html";
-                            throw new Error("Arquivo não encontrado.");
-                        }
-                        return response.text();
-                    })
-                    .then(md => {
-                        const postHTML = markdownToHTML(md);
-                        const postContainer = document.getElementById('post-content');
-                        postContainer.innerHTML = `<article>${postHTML}</article>`;
-                    })
-                    .catch(error => console.log('Erro ao carregar o post:', error));
-            } else {
-                window.location.href = "404.html";
-            }
-        }
+    return html;
+}
 
-        document.addEventListener("click", function(e) {
-            if (e.target && e.target.classList.contains("copy-button")) {
-                const codeBlock = e.target.nextElementSibling.innerText;
-                navigator.clipboard.writeText(codeBlock).then(() => {
-                    e.target.innerText = "Copiado";
-                    setTimeout(() => {
-                        e.target.innerText = "Copiar";
-                    }, 2000);
-                }).catch(err => {
-                    console.error("Erro ao copiar o código: ", err);
-                });
-            }
+function loadPost() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fileName = urlParams.get('file');
+    
+    if (fileName) {
+        fetch(`./posts/${fileName}.md`)
+            .then(response => {
+                if (!response.ok) { 
+                    window.location.href = "404.html";
+                    throw new Error("Arquivo não encontrado.");
+                }
+                return response.text();
+            })
+            .then(md => {
+                const authorInfo = extractAuthorInfo(md);
+                const postHTML = markdownToHTML(md.replace(/Info {[^}]+}/, ''));
+                const postContainer = document.getElementById('post-content');
+                const postDate = getFileDate(`./posts/${fileName}.md`);
+                
+                postContainer.innerHTML = `
+                    <article>
+                        <h1>${fileName.replace('-', ' ')}</h1>
+                        <div class="author-info">
+                            <img src="${authorInfo.photo}" alt="${authorInfo.name}">
+                            <span>Por <a href="${authorInfo.profileUrl}">${authorInfo.name}</a></span>
+                        </div>
+                        <p class="post-meta">Publicado em ${postDate}</p>
+                        <div>${postHTML}</div>
+                    </article>
+                `;
+            })
+            .catch(error => console.log('Erro ao carregar o post:', error));
+    } else {
+        window.location.href = "404.html";
+    }
+}
+
+function extractAuthorInfo(md) {
+    const authorMatch = md.match(/Info {\s*AuthorName: ([^\n]+)\s*AuthorUrlProfile: ([^\n]+)\s*AuthorPhoto: ([^\n]+)\s*}/);
+    if (authorMatch) {
+        return {
+            name: authorMatch[1].trim(),
+            profileUrl: authorMatch[2].trim(),
+            photo: authorMatch[3].trim()
+        };
+    }
+    return {
+        name: 'Desconhecido',
+        profileUrl: '#',
+        photo: 'https://via.placeholder.com/27'
+    };
+}
+
+function getFileDate(filePath) {
+    const fileStats = new Date();
+    return fileStats.toLocaleDateString('pt-BR');
+}
+
+document.addEventListener("click", function(e) {
+    if (e.target && e.target.classList.contains("copy-button")) {
+        const codeBlock = e.target.nextElementSibling.innerText;
+        navigator.clipboard.writeText(codeBlock).then(() => {
+            e.target.innerText = "Copiado";
+            setTimeout(() => {
+                e.target.innerText = "Copiar";
+            }, 2000);
+        }).catch(err => {
+            console.error("Erro ao copiar o código: ", err);
         });
+    }
+});
 
-        loadPost();
-    </script>
+loadPost();
+</script>
+
 </body>
 </html>
