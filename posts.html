@@ -253,7 +253,7 @@
             filter: invert(1) brightness(0) saturate(200%)
         }
 
-        .summary-container img {
+        .summary-container h4 img {
             width: 25px;
             margin-right: 10px;
             border-radius: 0px;
@@ -456,8 +456,8 @@ document.getElementById("summarizeButton").addEventListener("click", function() 
         const summaryContainer = document.createElement("div");
         summaryContainer.classList.add("summary-container");
         summaryContainer.innerHTML = `
-            <img src="https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/refs/heads/main/icon/ic_sum.svg" alt="Resumo" </img>
             <h4>
+            <img src="https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/refs/heads/main/icon/ic_sum.svg" alt="Resumo"><br>
                  AutoSummarizer
             </h4>
             <p>${summary}</p>
