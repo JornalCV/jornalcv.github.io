@@ -275,9 +275,8 @@
         .post-content > article:nth-child(3) {
             animation-delay: 1.5s;
         }
-        
         @media (prefers-color-scheme: dark) {
-
+        
         .toolbar.scrolled {
         background-color: rgba(0, 0, 0, 0.8);
         border: 0.5px solid rgba(255, 255, 255, 0.2);
@@ -287,36 +286,30 @@
         body {
             background-color: #000000;
             color: #dae0e6;
-            
         }
         .toolbar h1 {
             color: #FFFFFF;
             opacity: 0.8;
-            
         }
         .toolbar {
             background-color: rgba(255, 255, 255, 0.1);
             border: 0.5px solid rgba(255, 255, 255, 0.2); 
             box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.1);
-            
         }
         .experimental {
             color: #FFFFFF;
             background-color: rgba(0, 0, 0, 0.3);
             border: 0.5px solid rgba(255, 255, 255, 0.3);
-            
         }
         .image-description {
             color: rgba(255, 255, 255, 0.5); 
         }
-            
         span {
             color: #dae0e6;
         }
         .author-info, .author-info a, h1 {
             color: #95c6ff;
         }
-            
         p {
             color: #dae0e6;
         }
@@ -435,7 +428,7 @@ loadPost();
     <script>
     const toolbar = document.querySelector('.toolbar');
     toolbar.style.boxShadow = 'none';
-    toolbar.style.backgroundColor = 'none';
+    toolbar.style.backgroundColor = 'rgba(255, 255, 255, 0.0)';
     toolbar.style.border = 'none';
 
     function updateToolbar() {
