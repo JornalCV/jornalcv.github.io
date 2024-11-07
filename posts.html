@@ -236,11 +236,13 @@
         }
 
         .summary-container {
-            background-color: #f0f0f0;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
-            color: #333;
+            background-color: #e9eff6;
+            border: 0.5px solid rgba(169, 169, 169, 0.4); 
+            border-radius: 25px;
+            padding: 0 17px;
+            font-family: 'GoogleSansFlex', 'FluentEmoji', sans-serif;
+            font-weight: 500;
+            position: relative;
         }
 
         .summary-container h3 {
@@ -264,16 +266,17 @@
         .toolbar .summary-icon {
             width: 25px;
             height: 25px;
-            filter: invert(1) brightness(0) saturate(100%)
+            filter: invert(1) brightness(0) saturate(200%)
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.4s;
             margin-left: auto;
             margin-right: 1px;
             border-radius: 0px;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .toolbar .summary-icon:hover {
-            transform: scale(1.1);
+            transform: scale(1.5);
             filter: invert(1) brightness(0) saturate(200%)
         }
         
