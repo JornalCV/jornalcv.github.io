@@ -448,50 +448,14 @@ function markdownToHTML(md) {
     return html;
 }
 
-function summarizeText(content) {
-    const sentences = content.split(". ");
-    const summary = sentences.slice(0, 2).join(". ") + (sentences.length > 2 ? "..." : "");
-    return summary;
-}
-
-function displaySummary() {
-    const postContent = document.getElementById("post-content");
-    const existingSummary = postContent.querySelector(".summary-container");
-
-    if (existingSummary) {
-        existingSummary.remove();
-    }
-
-    const contentText = postContent.innerText;
-    const summary = summarizeText(contentText);
-
-    const summaryContainer = document.createElement("div");
-    summaryContainer.classList.add("summary-container");
-    summaryContainer.innerHTML = `
-        <h4>
-            <img src="https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/refs/heads/main/icon/ic_sum.svg" alt="Resumo">
-            Summer
-        </h4>
-        <h5>Resumo do texto</h5>
-        <p>${summary}</p>
-        <p class="auto-note">*Resumo gerado automaticamente.</p>
-    `;
-
-    postContent.prepend(summaryContainer);
-
-    setTimeout(() => summaryContainer.classList.add('show'), 100);
-}
-
-document.getElementById("summarizeButton").addEventListener("click", displaySummary);
-
 function loadPost() {
     const urlParams = new URLSearchParams(window.location.search);
     const fileName = urlParams.get('file');
-    
+
     if (fileName) {
         fetch(`./posts/${fileName}.md`)
             .then(response => {
-                if (!response.ok) { 
+                if (!response.ok) {
                     window.location.href = "404.html";
                     throw new Error("Arquivo não encontrado.");
                 }
@@ -501,26 +465,89 @@ function loadPost() {
                 const authorInfo = extractAuthorInfo(md);
                 const postHTML = markdownToHTML(md.replace(/Info {[^}]+}/, ''));
                 const postContainer = document.getElementById('post-content');
+                const postDate = new Date().toLocaleDateString();
 
                 postContainer.innerHTML = `
                     <article>
-                        <h1>${fileName.replace(/-/g, ' ').replace(/\b\w/g, char => {
-                            return char.toUpperCase();
-                        })}</h1>
+                        <h1>${formatTitle(fileName)}</h1>
                         <div class="author-info">
                             <img src="${authorInfo.photo}" alt="${authorInfo.name}">
                             <span>Por <a href="${authorInfo.profileUrl}">${authorInfo.name}</a></span>
                         </div>
+                        <p class="post-meta">Publicado em ${postDate}</p>
                         <div>${postHTML}</div>
                     </article>
                 `;
                 addCopyButtonEventListeners();
+                document.querySelector('body').classList.add('loaded');
             })
             .catch(error => console.log('Erro ao carregar o post:', error));
     } else {
         window.location.href = "404.html";
     }
 }
+
+function formatTitle(fileName) {
+    return fileName
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, char => char.toUpperCase());
+}
+
+function addCopyButtonEventListeners() {
+    const copyButtons = document.querySelectorAll('.copy-button');
+    copyButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const code = button.nextElementSibling.innerText;
+            navigator.clipboard.writeText(code)
+                .then(() => {
+                    button.innerText = 'Copied!';
+                    setTimeout(() => {
+                        button.innerText = 'Copiar';
+                    }, 1500);
+                })
+                .catch(() => alert('Erro ao copiar'));
+        });
+    });
+}
+
+function summarizeText(content) {
+    let sentences = content.split(". ");
+    let summary = sentences.slice(0, 2).join(". ") + (sentences.length > 2 ? "." : "");
+    return summary;
+}
+
+document.getElementById("summarizeButton").addEventListener("click", function() {
+    const postContent = document.getElementById("post-content");
+    const existingSummaryContainer = postContent.querySelector(".summary-container");
+
+    if (existingSummaryContainer) {
+        existingSummaryContainer.classList.remove('show');
+    } else {
+        const articleContent = postContent.querySelector("article").innerText;
+        const summary = summarizeText(articleContent);
+
+        const summaryContainer = document.createElement("div");
+        summaryContainer.classList.add("summary-container");
+        summaryContainer.innerHTML = `
+            <h4>
+            <img src="https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/refs/heads/main/icon/ic_sum.svg" alt="Resumo">
+            Summary
+            </h4>
+            <h5>Resumo do texto</h5>
+            <p>${summary}</p>
+            <p class="auto-note">*Resumo gerado automaticamente.</p>
+        `;
+
+        postContent.prepend(summaryContainer);
+
+        window.scrollTo({
+            top: summaryContainer.offsetTop - 90,
+            behavior: 'smooth'
+        });
+
+        setTimeout(() => summaryContainer.classList.add('show'), 100);
+    }
+});
 
 function extractAuthorInfo(md) {
     const authorMatch = md.match(/Info {\s*AuthorName: ([^\n]+)\s*AuthorUrlProfile: ([^\n]+)\s*AuthorPhoto: ([^\n]+)\s*}/);
@@ -537,6 +564,20 @@ function extractAuthorInfo(md) {
         photo: 'https://via.placeholder.com/27'
     };
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const toolbar = document.querySelector('.toolbar');
+    
+    function updateToolbar() {
+        if (window.scrollY > 10) {
+            toolbar.classList.add('scrolled');
+        } else {
+            toolbar.classList.remove('scrolled');
+        }
+    }
+
+    window.addEventListener('scroll', updateToolbar);
+});
 
 loadPost();
 </script>
