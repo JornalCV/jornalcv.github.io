@@ -235,6 +235,11 @@
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
         }
 
+        @keyframes fadeInWord {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
         .summary-container {
             background-color: #e9eff6;
             border: 0.5px solid rgba(169, 169, 169, 0.4); 
@@ -243,6 +248,19 @@
             font-family: 'GoogleSansFlex', 'FluentEmoji', sans-serif;
             font-weight: 500;
             position: relative;
+            transition: transform 0.3s ease-out, opacity 0.3s;
+        }
+
+        .summary-container.show {
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+        } 
+
+        .word {
+            display: inline-block;
+            opacity: 0;
+            animation: fadeInWord 0.3s ease forwards;
         }
 
         .summary-container h4 {
@@ -509,6 +527,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
 loadPost();
 </script>
+<script>
+        const summaryText = "Este é o resumo do artigo que vai aparecer palavra por palavra com uma animação.";
 
+        function showSummary() {
+            const summaryContainer = document.getElementById('summary');
+            summaryContainer.innerHTML = ''; // Limpa conteúdo anterior
+            const words = summaryText.split(" "); // Divide em palavras
+            
+            words.forEach((word, index) => {
+                const span = document.createElement('span');
+                span.classList.add('word');
+                span.style.animationDelay = `${index * 0.1}s`; // Atraso para cada palavra
+                span.textContent = word + " ";
+                summaryContainer.appendChild(span);
+            });
+            
+            summaryContainer.classList.add('show'); // Mostra o contêiner
+        }
+
+        // Adiciona o evento de clique ao botão para exibir o resumo
+        document.getElementById('summarizeButton').addEventListener('click', showSummary);
+</script>
 </body>
 </html>
