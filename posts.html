@@ -317,8 +317,8 @@
     <div class="toolbar">
     <h1>Jornal CV</h1>
     <span class="experimental">Experimental</span>
-    <button id="summarizeButton" class="summarize-button">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Font_Awesome_5_solid_pencil-alt.svg" alt="Resumir" title="Resumir conteúdo">
+    <button id="theme-toggle" class="summarize-button">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Font_Awesome_5_solid_moon.svg" alt="Alterar Tema" title="Alterar Tema">
     </button>
 </div>
 
@@ -480,5 +480,32 @@
         window.addEventListener('scroll', updateToolbar);
     });
 </script>
+    <script>
+    const themeToggleButton = document.getElementById('theme-toggle');
+
+    themeToggleButton.addEventListener('click', () => {
+        document.body.classList.toggle('dark-theme');
+    });
+
+    // Verifica se o usuário tem preferências salvas
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        document.body.classList.add(savedTheme);
+    } else {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.classList.add('dark-theme');
+        }
+    }
+
+    const observer = new MutationObserver(() => {
+        if (document.body.classList.contains('dark-theme')) {
+            localStorage.setItem('theme', 'dark-theme');
+        } else {
+            localStorage.setItem('theme', 'light-theme');
+        }
+    });
+
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    </script>
 </body>
 </html>
