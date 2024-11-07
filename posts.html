@@ -318,7 +318,7 @@
     <h1>Jornal CV</h1>
     <span class="experimental">Experimental</span>
     <button id="summarizeButton" class="summarize-button">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Font_Awesome_5_solid_pencil-alt.svg" alt="Resumir" title="Resumir conteúdo">
+        <img src="https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/refs/heads/main/icon/ic_sum.svg" alt="Resumir" title="Resumir conteúdo">
     </button>
 </div>
 
@@ -390,6 +390,7 @@ function loadPost() {
     }
 }
 
+// Função para ativar o evento de cópia em botões dinâmicos
 function addCopyButtonEventListeners() {
     const copyButtons = document.querySelectorAll('.copy-button');
     copyButtons.forEach(button => {
@@ -407,6 +408,7 @@ function addCopyButtonEventListeners() {
     });
 }
 
+// Resumo curto
 function summarizeText(content) {
     let sentences = content.split(". ");
     let summary = sentences.slice(0, 2).join(". ") + (sentences.length > 2 ? "..." : "");
@@ -416,18 +418,23 @@ function summarizeText(content) {
 document.getElementById("summarizeButton").addEventListener("click", function() {
     const postContent = document.getElementById("post-content");
 
-    const articleContent = postContent.querySelector("article").innerText;
+    if (!document.querySelector(".summary-container")) {
+        const articleContent = postContent.querySelector("article").innerText;
+        const summary = summarizeText(articleContent); 
 
-    const summary = summarizeText(articleContent); 
-
-    const summaryContainer = document.createElement("div");
-    summaryContainer.classList.add("summary-container");
-    summaryContainer.innerHTML = `
-        <h3>Resumo:</h3>
-        <p>${summary}</p>
-    `;
-    
-    postContent.prepend(summaryContainer); 
+        const summaryContainer = document.createElement("div");
+        summaryContainer.classList.add("summary-container", "code-block"); // Adicionando a classe para o estilo do card
+        summaryContainer.innerHTML = `
+            <div style="display: flex; align-items: center;">
+                <img src="https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/refs/heads/main/icon/ic_sum.svg" alt="AutoSummarizer" style="width: 20px; margin-right: 10px;">
+                <h4>AutoSummarizer</h4>
+            </div>
+            <p>${summary}</p>
+            <footer><h5>Este resumo foi gerado automaticamente.</h5></footer>
+        `;
+        
+        postContent.prepend(summaryContainer); 
+    }
 });
 
 function extractAuthorInfo(md) {
@@ -451,8 +458,13 @@ function getFileDate(filePath) {
     return fileStats.toLocaleDateString();
 }
 
+// Manter a toolbar fixa no topo
 document.addEventListener('DOMContentLoaded', () => {
     const toolbar = document.querySelector('.toolbar');
+    toolbar.innerHTML = `
+        <img src="https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/refs/heads/main/icon/ic_sum.svg" alt="Logo" style="width: 24px; vertical-align: middle; filter: invert(1);">
+        <h1>Meu Site</h1>
+    `;
     
     function updateToolbar() {
         if (window.scrollY > 10) {
@@ -467,7 +479,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 loadPost();
 </script>
-
 
 </body>
 </html>
