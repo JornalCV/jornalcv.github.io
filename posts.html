@@ -236,15 +236,48 @@
         }
 
         .summary-container {
-            background-color: #e9eff6;
-            border: 0.5px solid rgba(169, 169, 169, 0.4); 
+            background-color: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(169, 169, 169, 0.4);
             border-radius: 25px;
-            padding: 20px 20px;
-            font-family: 'GoogleSansFlex', 'FluentEmoji', sans-serif;
-            font-weight: 500;
+            padding: 20px;
             position: fixed;
-            box-shadow: 0px 0px 25px rgba(75, 158, 255, 0.5);
-            transition: max-height 0.5s ease, opacity 0.5s ease;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 40px);
+            max-width: 760px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 11;
+            opacity: 0;
+            visibility: hidden;
+            backdrop-filter: blur(8px);
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        
+        .summary-container.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .summary-content {
+            color: #000;
+            font-size: 1em;
+            line-height: 1.4;
+        }
+        
+        .close-summary {
+            display: block;
+            text-align: right;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #000;
+            padding: 5px;
+            transition: color 0.2s;
+        }
+        
+        .close-summary:hover {
+            color: #666;
         }
 
         .summary-container h4 {
@@ -378,8 +411,14 @@
     <span class="experimental">Experimental</span>
     <img src="https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/refs/heads/main/icon/ic_sum.svg" alt="Resumo" class="summary-icon" id="summarizeButton">
 </div>
-
-
+       
+       <div id="summary" class="summary-container">
+        <span class="close-summary" id="closeSummary">&times;</span>
+        <div class="summary-content">
+            <h2>Resumo do Artigo</h2>
+        </div>
+    </div>
+    
     <div id="post-content" class="post-content"></div>
 
 <script>
@@ -430,7 +469,6 @@ function loadPost() {
                 postContainer.innerHTML = `
                     <article>
                         <h1>${fileName.replace(/-/g, ' ').replace(/\b\w/g, char => {
-                        
                             return char.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
                         })}</h1>
                         <div class="author-info">
