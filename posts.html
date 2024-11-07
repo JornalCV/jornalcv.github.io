@@ -464,7 +464,7 @@ function addCopyButtonEventListeners() {
 
 function summarizeText(content) {
     let sentences = content.split(". ");
-    let summary = sentences.slice(0, 2).join(". ") + (sentences.length > 2 ? "..." : "");
+    let summary = sentences.slice(0, 2).join(". ") + (sentences.length > 2 ? "." : "");
     return summary;
 }
 
@@ -496,7 +496,7 @@ document.getElementById("summarizeButton").addEventListener("click", function() 
         postContent.prepend(summaryContainer);
 
         window.scrollTo({
-            top: summaryContainer.offsetTop - 50,
+            top: summaryContainer.offsetTop - 80,
             behavior: 'smooth'
         });
 
