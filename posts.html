@@ -205,7 +205,7 @@
             padding: 10px 20px;
             border-radius: 999px;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
             z-index: 10;
             transition: background-color 0.4s, box-shadow 0.5s, border 0.4s;
@@ -216,6 +216,7 @@
             font-size: 1.5em;
             color: #151616;
             opacity: 0.8;
+            flex-grow: 1;
         }
         img {
             border-radius: 15px;
@@ -262,11 +263,12 @@
         }
 
         .toolbar .summary-icon {
-                width: 30px;
-                height: 30px;
-                fill: #ffffff;
+                width: 20px;
+                height: 20px;
+                fill: #000000;
                 cursor: pointer;
                 transition: transform 0.2s;
+                margin-left: auto;
         }
 
         .toolbar .summary-icon:hover {
@@ -339,9 +341,9 @@
 </head>
 <body>
 <div class="toolbar">
-    <img src="https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/refs/heads/main/icon/ic_sum.svg" alt="Resumo" class="summary-icon" id="summarizeButton">
     <h1>Jornal CV</h1>
     <span class="experimental">Experimental</span>
+    <img src="https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/refs/heads/main/icon/ic_sum.svg" alt="Resumo" class="summary-icon" id="summarizeButton">
 </div>
 
 
