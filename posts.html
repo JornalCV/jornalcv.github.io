@@ -243,6 +243,7 @@
             font-family: 'GoogleSansFlex', 'FluentEmoji', sans-serif;
             font-weight: 500;
             position: relative;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
         }
 
         .summary-container h4 {
@@ -460,7 +461,11 @@ function addCopyButtonEventListeners() {
         });
     });
 }
-
+        document.getElementById('summarizeButton').addEventListener('click', function () {
+            const summaryContainer = document.getElementById('summaryContainer');
+            summaryContainer.classList.toggle('show');
+        });
+    
 function summarizeText(content) {
     let sentences = content.split(". ");
     let summary = sentences.slice(0, 2).join(". ") + (sentences.length > 2 ? "..." : "");
