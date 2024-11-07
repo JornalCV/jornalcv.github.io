@@ -381,6 +381,7 @@ function loadPost() {
                         <div>${postHTML}</div>
                     </article>
                 `;
+                addCopyButtonEventListeners();
                 document.querySelector('body').classList.add('loaded');
             })
             .catch(error => console.log('Erro ao carregar o post:', error));
@@ -389,7 +390,23 @@ function loadPost() {
     }
 }
 
-// Resumo curto (menor número de frases)
+function addCopyButtonEventListeners() {
+    const copyButtons = document.querySelectorAll('.copy-button');
+    copyButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const code = button.nextElementSibling.innerText;
+            navigator.clipboard.writeText(code)
+                .then(() => {
+                    button.innerText = 'Copied!';
+                    setTimeout(() => {
+                        button.innerText = 'Copiar';
+                    }, 1500);
+                })
+                .catch(() => alert('Erro ao copiar'));
+        });
+    });
+}
+
 function summarizeText(content) {
     let sentences = content.split(". ");
     let summary = sentences.slice(0, 2).join(". ") + (sentences.length > 2 ? "..." : "");
@@ -434,24 +451,6 @@ function getFileDate(filePath) {
     return fileStats.toLocaleDateString();
 }
 
-// Carregar os botões de copiar para funcionar em blocos de código dinâmicos
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.copy-button').forEach(button => {
-        button.addEventListener('click', function() {
-            const code = button.previousElementSibling.querySelector('code').innerText;
-            navigator.clipboard.writeText(code)
-                .then(() => {
-                    button.innerText = 'Copied!';
-                    setTimeout(() => {
-                        button.innerText = 'Copiar';
-                    }, 1500);
-                })
-                .catch(() => alert('Erro ao copiar'));
-        });
-    });
-});
-
-// Manter a toolbar fixa no topo
 document.addEventListener('DOMContentLoaded', () => {
     const toolbar = document.querySelector('.toolbar');
     
@@ -468,6 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 loadPost();
 </script>
+
 
 </body>
 </html>
