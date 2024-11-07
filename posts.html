@@ -235,6 +235,20 @@
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
         }
 
+        .summarize-button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 5px 15px;
+            font-family: 'GoogleSansFlex', sans-serif;
+        }
+
+         .summarize-button img {
+             width: 20px;
+             height: 20px;
+             vertical-align: middle;
+        }
+        
         @keyframes fadeInUp {
             0% {
                 opacity: 0;
@@ -301,9 +315,13 @@
 </head>
 <body>
     <div class="toolbar">
-        <h1>Jornal CV</h1>
-        <span class="experimental">Experimental</span>
-    </div>
+    <h1>Jornal CV</h1>
+    <span class="experimental">Experimental</span>
+    <button id="summarizeButton" class="summarize-button">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Font_Awesome_5_solid_pencil-alt.svg" alt="Resumir" title="Resumir conteúdo">
+    </button>
+</div>
+
 
     <div id="post-content" class="post-content"></div>
 
@@ -371,6 +389,28 @@ function loadPost() {
     }
 }
 
+function summarizeText(content) {
+    let sentences = content.split(". ");
+    let summary = sentences.slice(0, 3).join(". ") + (sentences.length > 3 ? "..." : "");
+    return summary;
+}
+
+document.getElementById("summarizeButton").addEventListener("click", function() {
+    const postContent = document.getElementById("post-content");
+    const articleContent = postContent.querySelector("article p").innerText; 
+    
+    const summary = summarizeText(articleContent); 
+
+    const summaryContainer = document.createElement("div");
+    summaryContainer.classList.add("summary-container");
+    summaryContainer.innerHTML = `
+        <h3>Resumo:</h3>
+        <p>${summary}</p>
+    `;
+    
+    postContent.prepend(summaryContainer); 
+});
+        
 function extractAuthorInfo(md) {
     const authorMatch = md.match(/Info {\s*AuthorName: ([^\n]+)\s*AuthorUrlProfile: ([^\n]+)\s*AuthorPhoto: ([^\n]+)\s*}/);
     if (authorMatch) {
