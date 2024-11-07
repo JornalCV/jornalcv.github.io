@@ -243,6 +243,7 @@
             font-family: 'GoogleSansFlex', 'FluentEmoji', sans-serif;
             font-weight: 500;
             position: relative;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
         }
 
         .summary-container h4 {
@@ -489,6 +490,11 @@ document.getElementById("summarizeButton").addEventListener("click", function() 
         `;
         
         postContent.prepend(summaryContainer);
+
+        window.scrollTo({
+            top: summaryContainer.offsetTop - 50, 
+            behavior: 'smooth'
+        });
     }
 });
 
@@ -529,6 +535,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 loadPost();
 </script>
+
 
 </body>
 </html>
