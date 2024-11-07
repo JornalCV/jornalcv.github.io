@@ -408,17 +408,19 @@ document.addEventListener("click", function(e) {
 loadPost();
 </script>
     <script>
-    const toolbar = document.querySelector('.toolbar');
+    document.addEventListener('DOMContentLoaded', () => {
+        const toolbar = document.querySelector('.toolbar');
+        
+        function updateToolbar() {
+            if (window.scrollY > 10) {
+                toolbar.classList.add('scrolled');  
+            } else {
+                toolbar.classList.remove('scrolled');  
+            }
+        }
 
-    function updateToolbar() {
-        if (window.scrollY > 10) {
-            toolbar.classList.add('scrolled'); 
-        } else {
-            toolbar.classList.remove('scrolled'); 
-    }
-
-    window.addEventListener('scroll', updateToolbar);
+        window.addEventListener('scroll', updateToolbar);
+    });
 </script>
-
 </body>
 </html>
