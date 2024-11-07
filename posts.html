@@ -433,153 +433,97 @@ function markdownToHTML(md) {
         .replace(/^# (.*$)/gim, '<h1>$1</h1>')
         .replace(/\*\*([^*]+)\*\*/gim, '<strong>$1</strong>')
         .replace(/\*([^*]+)\*/gim, '<em>$1</em>')
-        .replace(/\!\[([^\]]+)\]\(([^)]+)\)/gim, (match, p1, p2) => {
-            return `<div style="text-align: center;" class="content"><img src="${p2}" alt="${p1}"><span class="image-description">${p1}</span></div>`;
-        })
+        .replace(/\!\[([^\]]+)\]\(([^)]+)\)/gim, '<img src="$2" alt="$1">')
         .replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2">$1</a>')
-        .replace(/^\- (.*$)/gim, '<ul><li>$1</li></ul>')
-        .replace(/(\n)/g, '<br>')
-        .replace(/^> \[!IMPORTANT\](.*$)/gim, '<div class="quote-card quote-important"><h3>IMPORTANT</h3><p>$1</p></div>')
-        .replace(/^> \[!NOTE\](.*$)/gim, '<div class="quote-card quote-note"><h3>NOTE</h3><p>$1</p></div>')
-        .replace(/^> \[!TIP\](.*$)/gim, '<div class="quote-card quote-tip"><h3>TIP</h3><p>$1</p></div>')
-        .replace(/^> \[!WARNING\](.*$)/gim, '<div class="quote-card quote-warning"><h3>WARNING</h3><p>$1</p></div>')
-        .replace(/^> (.*$)/gim, '<div class="quote-card quote-default"><h3>Citação</h3><p>$1</p></div>')
-        .replace(/```([^`]+)```/gim, '<div class="code-block"><button class="copy-button">Copiar</button><pre><code>$1</code></pre></div>');
+        .replace(/```([^`]+)```/gim, '<div class="code-block"><button class="copy-button">Copiar</button><pre><code>$1</code></pre></div>')
+        .replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>')
+        .replace(/(\n)/g, '<br>');
     return html;
+}
+
+function formatTitle(fileName) {
+    return fileName.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+}
+
+function extractAuthorInfo(md) {
+    const match = md.match(/Info {\s*AuthorName: (.+)\s*AuthorUrlProfile: (.+)\s*AuthorPhoto: (.+)\s*}/);
+    return match ? { name: match[1], profileUrl: match[2], photo: match[3] } : null;
+}
+
+function summarizeText(content) {
+    const sentences = content.split(". ");
+    return sentences.slice(0, 2).join(". ") + (sentences.length > 2 ? "..." : "");
 }
 
 function loadPost() {
     const urlParams = new URLSearchParams(window.location.search);
     const fileName = urlParams.get('file');
 
-    if (fileName) {
-        fetch(`./posts/${fileName}.md`)
-            .then(response => {
-                if (!response.ok) {
-                    window.location.href = "404.html";
-                    throw new Error("Arquivo não encontrado.");
-                }
-                return response.text();
-            })
-            .then(md => {
-                const authorInfo = extractAuthorInfo(md);
-                const postHTML = markdownToHTML(md.replace(/Info {[^}]+}/, ''));
-                const postContainer = document.getElementById('post-content');
-                const postDate = new Date().toLocaleDateString();
-
-                postContainer.innerHTML = `
-                    <article>
-                        <h1>${formatTitle(fileName)}</h1>
-                        <div class="author-info">
-                            <img src="${authorInfo.photo}" alt="${authorInfo.name}">
-                            <span>Por <a href="${authorInfo.profileUrl}">${authorInfo.name}</a></span>
-                        </div>
-                        <p class="post-meta">Publicado em ${postDate}</p>
-                        <div>${postHTML}</div>
-                    </article>
-                `;
-                addCopyButtonEventListeners();
-                document.querySelector('body').classList.add('loaded');
-            })
-            .catch(error => console.log('Erro ao carregar o post:', error));
-    } else {
+    if (!fileName) {
         window.location.href = "404.html";
+        return;
     }
-}
 
-function formatTitle(fileName) {
-    return fileName
-        .replace(/-/g, ' ')
-        .replace(/\b\w/g, char => char.toUpperCase());
+    fetch(`./posts/${fileName}.md`)
+        .then(response => {
+            if (!response.ok) throw new Error('Arquivo não encontrado');
+            return response.text();
+        })
+        .then(md => {
+            const authorInfo = extractAuthorInfo(md);
+            const postHTML = markdownToHTML(md.replace(/Info {[^}]+}/, ''));
+            const postDate = new Date().toLocaleDateString();
+            const title = formatTitle(fileName);
+            const postContainer = document.getElementById('post-content');
+
+            postContainer.innerHTML = `
+                <article>
+                    <h1>${title}</h1>
+                    ${authorInfo ? `
+                    <div class="author-info">
+                        <img src="${authorInfo.photo}" alt="${authorInfo.name}">
+                        <span>Por <a href="${authorInfo.profileUrl}">${authorInfo.name}</a></span>
+                    </div>` : ''}
+                    <p class="post-meta">Publicado em ${postDate}</p>
+                    <div>${postHTML}</div>
+                </article>
+            `;
+
+            addCopyButtonEventListeners();
+        })
+        .catch(() => window.location.href = "404.html");
 }
 
 function addCopyButtonEventListeners() {
-    const copyButtons = document.querySelectorAll('.copy-button');
-    copyButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const code = button.nextElementSibling.innerText;
-            navigator.clipboard.writeText(code)
-                .then(() => {
-                    button.innerText = 'Copied!';
-                    setTimeout(() => {
-                        button.innerText = 'Copiar';
-                    }, 1500);
-                })
-                .catch(() => alert('Erro ao copiar'));
+    const buttons = document.querySelectorAll('.copy-button');
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            const code = button.nextElementSibling.textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => button.textContent = 'Copiar', 1500);
+            });
         });
     });
 }
 
-function summarizeText(content) {
-    let sentences = content.split(". ");
-    let summary = sentences.slice(0, 2).join(". ") + (sentences.length > 2 ? "." : "");
-    return summary;
-}
+document.getElementById('summarizeButton').addEventListener('click', () => {
+    const postContent = document.getElementById('post-content');
+    const articleContent = postContent.querySelector('article').innerText;
+    const summary = summarizeText(articleContent);
 
-document.getElementById("summarizeButton").addEventListener("click", function() {
-    const postContent = document.getElementById("post-content");
-    const existingSummaryContainer = postContent.querySelector(".summary-container");
+    const summaryContainer = document.createElement('div');
+    summaryContainer.className = 'summary-container';
+    summaryContainer.innerHTML = `
+        <h4>Resumo do Texto</h4>
+        <p>${summary}</p>
+        <p class="auto-note">*Resumo gerado automaticamente.</p>
+    `;
 
-    if (existingSummaryContainer) {
-        existingSummaryContainer.classList.remove('show');
-    } else {
-        const articleContent = postContent.querySelector("article").innerText;
-        const summary = summarizeText(articleContent);
-
-        const summaryContainer = document.createElement("div");
-        summaryContainer.classList.add("summary-container");
-        summaryContainer.innerHTML = `
-            <h4>
-            <img src="https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/refs/heads/main/icon/ic_sum.svg" alt="Resumo">
-            Summary
-            </h4>
-            <h5>Resumo do texto</h5>
-            <p>${summary}</p>
-            <p class="auto-note">*Resumo gerado automaticamente.</p>
-        `;
-
-        postContent.prepend(summaryContainer);
-
-        window.scrollTo({
-            top: summaryContainer.offsetTop - 90,
-            behavior: 'smooth'
-        });
-
-        setTimeout(() => summaryContainer.classList.add('show'), 100);
-    }
+    postContent.prepend(summaryContainer);
 });
 
-function extractAuthorInfo(md) {
-    const authorMatch = md.match(/Info {\s*AuthorName: ([^\n]+)\s*AuthorUrlProfile: ([^\n]+)\s*AuthorPhoto: ([^\n]+)\s*}/);
-    if (authorMatch) {
-        return {
-            name: authorMatch[1].trim(),
-            profileUrl: authorMatch[2].trim(),
-            photo: authorMatch[3].trim()
-        };
-    }
-    return {
-        name: 'Desconhecido',
-        profileUrl: '#',
-        photo: 'https://via.placeholder.com/27'
-    };
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const toolbar = document.querySelector('.toolbar');
-    
-    function updateToolbar() {
-        if (window.scrollY > 10) {
-            toolbar.classList.add('scrolled');
-        } else {
-            toolbar.classList.remove('scrolled');
-        }
-    }
-
-    window.addEventListener('scroll', updateToolbar);
-});
-
-loadPost();
+document.addEventListener('DOMContentLoaded', loadPost);
 </script>
 
 </body>
