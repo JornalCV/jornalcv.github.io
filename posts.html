@@ -325,7 +325,7 @@
 
     <div id="post-content" class="post-content"></div>
 
-    <script>
+<script>
     function markdownToHTML(md) {
         let html = md
             .replace(/^###### (.*$)/gim, '<h6>$1</h6>')
@@ -382,6 +382,9 @@
                         </article>
                     `;
                     document.querySelector('body').classList.add('loaded');
+
+                    
+                    attachCopyButtonEvents();
                 })
                 .catch(error => console.log('Erro ao carregar o post:', error));
         } else {
@@ -395,22 +398,51 @@
         return summary;
     }
 
-    document.getElementById("summarizeButton").addEventListener("click", function() {
-        const postContent = document.getElementById("post-content");
-    
-        const articleContent = postContent.querySelector("article").innerText;
+    document.addEventListener("DOMContentLoaded", () => {
+        const summarizeButton = document.getElementById("summarizeButton");
 
-        const summary = summarizeText(articleContent); 
+        if (summarizeButton) {
+            summarizeButton.addEventListener("click", function() {
+                const postContent = document.getElementById("post-content");
+                const articleContent = postContent.querySelector("article").innerText;
+                const summary = summarizeText(articleContent); 
 
-        const summaryContainer = document.createElement("div");
-        summaryContainer.classList.add("summary-container");
-        summaryContainer.innerHTML = `
-            <h3>Resumo:</h3>
-            <p>${summary}</p>
-        `;
-        
-        postContent.prepend(summaryContainer); 
+                const summaryContainer = document.createElement("div");
+                summaryContainer.classList.add("summary-container");
+                summaryContainer.innerHTML = `
+                    <h3>Resumo:</h3>
+                    <p>${summary}</p>
+                `;
+                postContent.prepend(summaryContainer); 
+            });
+        }
+
+        const toolbar = document.querySelector('.toolbar');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 10) {
+                toolbar.classList.add('fixed');  
+            } else {
+                toolbar.classList.remove('fixed');  
+            }
+        });
     });
+
+    function attachCopyButtonEvents() {
+        const copyButtons = document.querySelectorAll('.copy-button');
+        copyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const code = button.nextElementSibling.innerText; 
+                navigator.clipboard.writeText(code)
+                    .then(() => {
+                        button.innerText = 'Copied!';
+                        setTimeout(() => {
+                            button.innerText = 'Copiar';
+                        }, 1500);
+                    })
+                    .catch(() => alert('Erro ao copiar'));
+            });
+        });
+    }
 
     function extractAuthorInfo(md) {
         const authorMatch = md.match(/Info {\s*AuthorName: ([^\n]+)\s*AuthorUrlProfile: ([^\n]+)\s*AuthorPhoto: ([^\n]+)\s*}/);
@@ -430,7 +462,7 @@
 
     function getFileDate(filePath) {
         const fileStats = new Date();
-        return fileStats.toLocaleDateString();  // Formato de data, adaptado para exibir uma data simples.
+        return fileStats.toLocaleDateString();
     }
 
     window.addEventListener('load', function() {
@@ -445,40 +477,7 @@
         }
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const copyButtons = document.querySelectorAll('.copy-button');
-        copyButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const code = button.previousElementSibling.querySelector('code').innerText;
-                navigator.clipboard.writeText(code)
-                    .then(() => {
-                        button.innerText = 'Copied!';
-                        setTimeout(() => {
-                            button.innerText = 'Copiar';
-                        }, 1500);
-                    })
-                    .catch(() => alert('Erro ao copiar'));
-            });
-        });
-    });
-
     loadPost();
-    </script>
-</script>
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const toolbar = document.querySelector('.toolbar');
-        
-        function updateToolbar() {
-            if (window.scrollY > 10) {
-                toolbar.classList.add('scrolled');  
-            } else {
-                toolbar.classList.remove('scrolled');  
-            }
-        }
-
-        window.addEventListener('scroll', updateToolbar);
-    });
 </script>
 </body>
 </html>
