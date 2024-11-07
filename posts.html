@@ -82,17 +82,16 @@
             height: 27px;
             border-radius: 50%;
             margin-right: 10px;
-            margin-bottom: 1px;
         }
 
-        .author-info, .auauthor-info a {
+        .author-info, .author-info a {
             color: #557e6d;
             text-decoration: none;
             font-weight: bold;
         }
 
         .author-info a:hover {
-            text-decoration: none;
+            text-decoration: underline;
         }
 
         .post-meta {
@@ -225,7 +224,7 @@
 
         .post-content > article {
             opacity: 0;
-            animation: fadeInUp 1s ease-out forwards;
+            animation: fadeInUp 0.5s ease-out forwards;
         }
 
         .post-content > article:nth-child(1) {
@@ -300,7 +299,7 @@ function loadPost() {
                         <h1>${fileName.replace('-', ' ')}</h1>
                         <div class="author-info">
                             <img src="${authorInfo.photo}" alt="${authorInfo.name}">
-                            <span><p>Por</p> <a href="${authorInfo.profileUrl}">${authorInfo.name}</a></span>
+                            <span>Por <a href="${authorInfo.profileUrl}">${authorInfo.name}</a></span>
                         </div>
                         <p class="post-meta">Publicado em ${postDate}</p>
                         <div>${postHTML}</div>
