@@ -471,7 +471,11 @@ function summarizeText(content) {
 document.getElementById("summarizeButton").addEventListener("click", function() {
     const postContent = document.getElementById("post-content");
 
-    if (!postContent.querySelector(".summary-container")) {
+    const existingSummaryContainer = postContent.querySelector(".summary-container");
+
+    if (existingSummaryContainer) {
+        existingSummaryContainer.classList.remove('show');
+    } else {
         const articleContent = postContent.querySelector("article").innerText;
         const summary = summarizeText(articleContent); 
 
@@ -492,9 +496,11 @@ document.getElementById("summarizeButton").addEventListener("click", function() 
         postContent.prepend(summaryContainer);
 
         window.scrollTo({
-            top: summaryContainer.offsetTop - 50, 
+            top: summaryContainer.offsetTop - 50,
             behavior: 'smooth'
         });
+
+        setTimeout(() => summaryContainer.classList.add('show'), 100);
     }
 });
 
@@ -535,7 +541,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 loadPost();
 </script>
-
 
 </body>
 </html>
