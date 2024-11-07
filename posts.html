@@ -236,44 +236,45 @@
         }
 
         .summary-container {
-                background-color: #f0f0f0;
-                border-radius: 10px;
-                padding: 15px;
-                margin: 15px 0;
-                color: #333;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #333;
         }
 
         .summary-container h3 {
-                display: flex;
-                align-items: center;
-                font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            font-size: 1.2em;
         }
 
         .summary-container h3 img {
-                width: 25px;
-                margin-right: 10px;
+            width: 25px;
+            margin-right: 10px;
         }
 
         .summary-container .auto-note {
-                font-size: 0.9em;
-                color: #777;
-                margin-top: 10px;
-                font-style: italic;
+            font-size: 0.9em;
+            color: #777;
+            margin-top: 10px;
+            font-style: italic;
         }
 
         .toolbar .summary-icon {
-                width: 25px;
-                height: 25px;
-                fill: #000000;
-                cursor: pointer;
-                transition: transform 0.2s;
-                margin-left: auto;
-                margin-right: 1px;
-                border-radius: 0px;
+            width: 25px;
+            height: 25px;
+            filter: invert(1) brightness(0) saturate(100%)
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-left: auto;
+            margin-right: 1px;
+            border-radius: 0px;
         }
 
         .toolbar .summary-icon:hover {
-                transform: scale(1.1);
+            transform: scale(1.1);
+            filter: invert(1) brightness(0) saturate(200%)
         }
         
         @keyframes fadeInUp {
