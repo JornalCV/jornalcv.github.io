@@ -249,6 +249,8 @@
             display: flex;
             align-items: center;
             font-size: 1.2em;
+            border-radius: 0px;
+            filter: invert(1) brightness(0) saturate(200%)
         }
 
         .summary-container h3 img {
@@ -266,7 +268,7 @@
         .toolbar .summary-icon {
             width: 25px;
             height: 25px;
-            filter: invert(1) brightness(0) saturate(200%)
+            filter: invert(0) brightness(0) saturate(200%)
             cursor: pointer;
             transition: transform 0.4s;
             margin-left: auto;
@@ -276,7 +278,7 @@
         }
 
         .toolbar .summary-icon:hover {
-            transform: scale(1.5);
+            transform: scale(1.1);
             filter: invert(1) brightness(0) saturate(200%)
         }
         
