@@ -63,7 +63,7 @@
             margin-bottom: 0.5em;
         }
 
-        p {
+        p, span {
             font-size: 1em;
             color: #001e2e;
             margin-bottom: 1.2em;
@@ -300,7 +300,7 @@ function loadPost() {
                         <h1>${fileName.replace('-', ' ')}</h1>
                         <div class="author-info">
                             <img src="${authorInfo.photo}" alt="${authorInfo.name}">
-                            <span><p>Por</p> <a href="${authorInfo.profileUrl}">${authorInfo.name}</a></span>
+                            <span>Por <a href="${authorInfo.profileUrl}">${authorInfo.name}</a></span>
                         </div>
                         <p class="post-meta">Publicado em ${postDate}</p>
                         <div>${postHTML}</div>
