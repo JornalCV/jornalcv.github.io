@@ -268,8 +268,8 @@
         }
 
         .toolbar .summary-icon {
-            width: 25px;
-            height: 25px;
+            width: 20px;
+            height: 20px;
             cursor: pointer;
             transition: transform 0.4s;
             margin-left: auto;
@@ -280,7 +280,7 @@
         }
 
         .toolbar .summary-icon:hover {
-            transform: scale(1.1);
+            transform: scale(1.2);
             filter: invert(1) brightness(0) saturate(200%)
         }
         
@@ -456,10 +456,10 @@ document.getElementById("summarizeButton").addEventListener("click", function() 
         const summaryContainer = document.createElement("div");
         summaryContainer.classList.add("summary-container");
         summaryContainer.innerHTML = `
-            <h3>
+            <h4>
                 <img src="https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/refs/heads/main/icon/ic_sum.svg" alt="Resumo">
                 AutoSummarizer
-            </h3>
+            </h4>
             <p>${summary}</p>
             <p class="auto-note">*Resumo gerado automaticamente.</p>
         `;
