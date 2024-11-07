@@ -389,15 +389,10 @@ function loadPost() {
     }
 }
 
-function summarizeText(content) {
-    let sentences = content.split(". ");
-    let summary = sentences.slice(0, 3).join(". ") + (sentences.length > 3 ? "..." : "");
-    return summary;
-}
-
 document.getElementById("summarizeButton").addEventListener("click", function() {
     const postContent = document.getElementById("post-content");
-    const articleContent = postContent.querySelector("article p").innerText; 
+    
+    const articleContent = postContent.querySelector("article").innerText; 
     
     const summary = summarizeText(articleContent); 
 
@@ -410,6 +405,7 @@ document.getElementById("summarizeButton").addEventListener("click", function() 
     
     postContent.prepend(summaryContainer); 
 });
+
         
 function extractAuthorInfo(md) {
     const authorMatch = md.match(/Info {\s*AuthorName: ([^\n]+)\s*AuthorUrlProfile: ([^\n]+)\s*AuthorPhoto: ([^\n]+)\s*}/);
