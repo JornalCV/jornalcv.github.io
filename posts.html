@@ -317,8 +317,8 @@
     <div class="toolbar">
     <h1>Jornal CV</h1>
     <span class="experimental">Experimental</span>
-    <button id="theme-toggle" class="summarize-button">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Font_Awesome_5_solid_moon.svg" alt="Alterar Tema" title="Alterar Tema">
+    <button id="summarizeButton" class="summarize-button">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Font_Awesome_5_solid_pencil-alt.svg" alt="Resumir" title="Resumir conteúdo">
     </button>
 </div>
 
@@ -326,153 +326,138 @@
     <div id="post-content" class="post-content"></div>
 
     <script>
-    function markdownToHTML(md) {
-        let html = md
-            .replace(/^###### (.*$)/gim, '<h6>$1</h6>')
-            .replace(/^##### (.*$)/gim, '<h5>$1</h5>')
-            .replace(/^#### (.*$)/gim, '<h4>$1</h4>')
-            .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-            .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-            .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-            .replace(/\*\*([^*]+)\*\*/gim, '<strong>$1</strong>')
-            .replace(/\*([^*]+)\*/gim, '<em>$1</em>')
-            .replace(/\!\[([^\]]+)\]\(([^)]+)\)/gim, (match, p1, p2) => {
-                return `<div style="text-align: center;" class="content"><img src="${p2}" alt="${p1}"><span class="image-description">${p1}</span></div>`;
-            })
-            .replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2">$1</a>')
-            .replace(/^\- (.*$)/gim, '<ul><li>$1</li></ul>')
-            .replace(/(\n)/g, '<br>')
-            .replace(/^> \[!IMPORTANT\](.*$)/gim, '<div class="quote-card quote-important"><h3>IMPORTANT</h3><p>$1</p></div>')
-            .replace(/^> \[!NOTE\](.*$)/gim, '<div class="quote-card quote-note"><h3>NOTE</h3><p>$1</p></div>')
-            .replace(/^> \[!TIP\](.*$)/gim, '<div class="quote-card quote-tip"><h3>TIP</h3><p>$1</p></div>')
-            .replace(/^> \[!WARNING\](.*$)/gim, '<div class="quote-card quote-warning"><h3>WARNING</h3><p>$1</p></div>')
-            .replace(/^> (.*$)/gim, '<div class="quote-card quote-default"><h3>Citação</h3><p>$1</p></div>')
-            .replace(/```([^`]+)```/gim, '<div class="code-block"><button class="copy-button">Copiar</button><pre><code>$1</code></pre></div>');
-        return html;
-    }
-
-    function loadPost() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const fileName = urlParams.get('file');
-        
-        if (fileName) {
-            fetch(`./posts/${fileName}.md`)
-                .then(response => {
-                    if (!response.ok) { 
-                        window.location.href = "404.html";
-                        throw new Error("Arquivo não encontrado.");
-                    }
-                    return response.text();
+        function markdownToHTML(md) {
+            let html = md
+                .replace(/^###### (.*$)/gim, '<h6>$1</h6>')
+                .replace(/^##### (.*$)/gim, '<h5>$1</h5>')
+                .replace(/^#### (.*$)/gim, '<h4>$1</h4>')
+                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                .replace(/\*\*([^*]+)\*\*/gim, '<strong>$1</strong>')
+                .replace(/\*([^*]+)\*/gim, '<em>$1</em>')
+                .replace(/\!\[([^\]]+)\]\(([^)]+)\)/gim, (match, p1, p2) => {
+                    return `<div style="text-align: center;" class="content"><img src="${p2}" alt="${p1}"><span class="image-description">${p1}</span></div>`;
                 })
-                .then(md => {
-                    const authorInfo = extractAuthorInfo(md);
-                    const postHTML = markdownToHTML(md.replace(/Info {[^}]+}/, ''));
-                    const postContainer = document.getElementById('post-content');
-                    const postDate = getFileDate(`./posts/${fileName}.md`);
-                    
-                    postContainer.innerHTML = `
-                        <article>
-                            <h1>${fileName.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase())}</h1>
-                            <div class="author-info">
-                                <img src="${authorInfo.photo}" alt="${authorInfo.name}">
-                                <span>Por <a href="${authorInfo.profileUrl}">${authorInfo.name}</a></span>
-                            </div>
-                            <p class="post-meta">Publicado em ${postDate}</p>
-                            <div>${postHTML}</div>
-                        </article>
-                    `;
-                    document.querySelector('body').classList.add('loaded');
-                })
-                .catch(error => console.log('Erro ao carregar o post:', error));
-        } else {
-            window.location.href = "404.html";
-        }
-    }
+                .replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2">$1</a>')
+                .replace(/^\- (.*$)/gim, '<ul><li>$1</li></ul>')
+                .replace(/(\n)/g, '<br>')
+                .replace(/^> \[!IMPORTANT\](.*$)/gim, '<div class="quote-card quote-important"><h3>IMPORTANT</h3><p>$1</p></div>')
+                .replace(/^> \[!NOTE\](.*$)/gim, '<div class="quote-card quote-note"><h3>NOTE</h3><p>$1</p></div>')
+                .replace(/^> \[!TIP\](.*$)/gim, '<div class="quote-card quote-tip"><h3>TIP</h3><p>$1</p></div>')
+                .replace(/^> \[!WARNING\](.*$)/gim, '<div class="quote-card quote-warning"><h3>WARNING</h3><p>$1</p></div>')
+                .replace(/^> (.*$)/gim, '<div class="quote-card quote-default"><h3>Citação</h3><p>$1</p></div>')
+                .replace(/```([^`]+)```/gim, '<div class="code-block"><button class="copy-button">Copiar</button><pre><code>$1</code></pre></div>');
 
-    function summarizeText(content) {
-        let sentences = content.split(". ");
-        let summary = sentences.slice(0, 3).join(". ") + (sentences.length > 3 ? "..." : "");
-        return summary;
-    }
+    return html;
+}
 
-    // Evento para o botão de resumo
-    document.addEventListener("DOMContentLoaded", () => {
-        const summarizeButton = document.getElementById("summarizeButton");
-        
-        if (summarizeButton) {
-            summarizeButton.addEventListener("click", function() {
-                const postContent = document.getElementById("post-content");
-                
-                if (postContent) {
-                    const articleContent = postContent.querySelector("article").innerText;
-
-                    const summary = summarizeText(articleContent); 
-
-                    const summaryContainer = document.createElement("div");
-                    summaryContainer.classList.add("summary-container");
-                    summaryContainer.innerHTML = `
-                        <h3>Resumo:</h3>
-                        <p>${summary}</p>
-                    `;
-                    
-                    postContent.prepend(summaryContainer); 
+function loadPost() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fileName = urlParams.get('file');
+    
+    if (fileName) {
+        fetch(`./posts/${fileName}.md`)
+            .then(response => {
+                if (!response.ok) { 
+                    window.location.href = "404.html";
+                    throw new Error("Arquivo não encontrado.");
                 }
-            });
-        }
-    });
+                return response.text();
+            })
+            .then(md => {
+                const authorInfo = extractAuthorInfo(md);
+                const postHTML = markdownToHTML(md.replace(/Info {[^}]+}/, ''));
+                const postContainer = document.getElementById('post-content');
+                const postDate = getFileDate(`./posts/${fileName}.md`);
+                
+                postContainer.innerHTML = `
+                    <article>
+                        <h1>${fileName.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase())}</h1>
+                        <div class="author-info">
+                            <img src="${authorInfo.photo}" alt="${authorInfo.name}">
+                            <span>Por <a href="${authorInfo.profileUrl}">${authorInfo.name}</a></span>
+                        </div>
+                        <p class="post-meta">Publicado em ${postDate}</p>
+                        <div>${postHTML}</div>
+                    </article>
+                `;
+            })
+            .catch(error => console.log('Erro ao carregar o post:', error));
+    } else {
+        window.location.href = "404.html";
+    }
+}
 
-    function extractAuthorInfo(md) {
-        const authorMatch = md.match(/Info {\s*AuthorName: ([^\n]+)\s*AuthorUrlProfile: ([^\n]+)\s*AuthorPhoto: ([^\n]+)\s*}/);
-        if (authorMatch) {
-            return {
-                name: authorMatch[1].trim(),
-                profileUrl: authorMatch[2].trim(),
-                photo: authorMatch[3].trim()
-            };
-        }
+document.getElementById("summarizeButton").addEventListener("click", function() {
+    const postContent = document.getElementById("post-content");
+    
+    const articleContent = postContent.querySelector("article").innerText; 
+    
+    const summary = summarizeText(articleContent); 
+
+    const summaryContainer = document.createElement("div");
+    summaryContainer.classList.add("summary-container");
+    summaryContainer.innerHTML = `
+        <h3>Resumo:</h3>
+        <p>${summary}</p>
+    `;
+    
+    postContent.prepend(summaryContainer); 
+});
+
+        
+function extractAuthorInfo(md) {
+    const authorMatch = md.match(/Info {\s*AuthorName: ([^\n]+)\s*AuthorUrlProfile: ([^\n]+)\s*AuthorPhoto: ([^\n]+)\s*}/);
+    if (authorMatch) {
         return {
-            name: 'Desconhecido',
-            profileUrl: '#',
-            photo: 'https://via.placeholder.com/27'
+            name: authorMatch[1].trim(),
+            profileUrl: authorMatch[2].trim(),
+            photo: authorMatch[3].trim()
         };
     }
+    return {
+        name: 'Desconhecido',
+        profileUrl: '#',
+        photo: 'https://via.placeholder.com/27'
+    };
+}
 
-    function getFileDate(filePath) {
-        const fileStats = new Date();
-        return fileStats.toLocaleDateString();  // Formato de data, adaptado para exibir uma data simples.
-    }
+function getFileDate(filePath) {
+    const fileStats = new Date();
+    return fileStats.toLocaleDateString('pt-BR');
+}
 
-    window.addEventListener('load', function() {
-        setTimeout(() => {
-            document.body.classList.add('fade-in');
-        }, 500);
-    });
-
-    window.addEventListener('error', function(e) {
-        if (e.target.tagName === 'SCRIPT') {
-            window.location.href = '404.html';
-        }
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const copyButtons = document.querySelectorAll('.copy-button');
-        copyButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const code = button.previousElementSibling.querySelector('code').innerText;
-                navigator.clipboard.writeText(code)
-                    .then(() => {
-                        button.innerText = 'Copied!';
-                        setTimeout(() => {
-                            button.innerText = 'Copiar';
-                        }, 1500);
-                    })
-                    .catch(() => alert('Erro ao copiar'));
-            });
+document.addEventListener("click", function(e) {
+    if (e.target && e.target.classList.contains("copy-button")) {
+        const codeBlock = e.target.nextElementSibling.innerText;
+        navigator.clipboard.writeText(codeBlock).then(() => {
+            e.target.innerText = "Copiado";
+            setTimeout(() => {
+                e.target.innerText = "Copiar";
+            }, 2000);
+        }).catch(err => {
+            console.error("Erro ao copiar o código: ", err);
         });
-    });
+    }
+});
 
-    loadPost();
-                                                 
-    </script>
-    </body>
+loadPost();
+</script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const toolbar = document.querySelector('.toolbar');
+        
+        function updateToolbar() {
+            if (window.scrollY > 10) {
+                toolbar.classList.add('scrolled');  
+            } else {
+                toolbar.classList.remove('scrolled');  
+            }
+        }
+
+        window.addEventListener('scroll', updateToolbar);
+    });
+</script>
+</body>
 </html>
