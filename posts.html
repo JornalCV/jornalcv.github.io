@@ -254,7 +254,7 @@
             border-radius: 0px;
             flex-direction: column;
             margin-top: 0px;
-            filter: invert(1) brightness(0) saturate(200%);
+            filter: invert(1) brightness(0) saturate(200%)
         }
 
         .summary-container h4 img {
@@ -282,169 +282,270 @@
             margin-right: 1px;
             border-radius: 0px;
             -webkit-tap-highlight-color: transparent;
-            filter: invert(1) brightness(0) saturate(200%);
-        }
-
-                .toolbar .summary-icon:hover {
-            transform: scale(1.4);
             filter: invert(1) brightness(0) saturate(200%)
         }
 
-        .summary-container.fixed {
-            position: fixed;
-            top: 90px; /* Ajuste de acordo com o espaço necessário para o conteúdo */
-            left: 10px;
-            right: 10px;
-            z-index: 100;
-            max-height: 80%;
-            opacity: 0;
-            visibility: hidden;
-            backdrop-filter: blur(10px);
-            background-color: rgba(255, 255, 255, 0.5);
-            transition: max-height 0.5s ease, opacity 0.5s ease;
+        .toolbar .summary-icon:hover {
+            transform: scale(1.4);
+            filter: invert(1) brightness(0) saturate(200%)
         }
-
-        .summary-container.fixed.active {
-            opacity: 1;
-            visibility: visible;
-            max-height: 100%;
-        }
-
-        .summary-container .summary-text {
-            font-size: 1em;
-            color: #000000;
-            margin-bottom: 20px;
-        }
-
-        .summary-container .summary-close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: transparent;
-            border: none;
-            font-size: 1.5em;
-            color: #000000;
-            cursor: pointer;
-        }
-
-        .summary-container .summary-close:hover {
-            color: #ff0000;
-        }
-
-        /* Responsividade para dispositivos móveis */
-        @media (max-width: 768px) {
-            .summary-container {
-                padding: 15px;
+        
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
+
+        .post-content > article {
+            opacity: 0;
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        .post-content > article:nth-child(1) {
+            animation-delay: 0.5s;
+        }
+
+        .post-content > article:nth-child(2) {
+            animation-delay: 1s;
+        }
+
+        .post-content > article:nth-child(3) {
+            animation-delay: 1.5s;
+        }
+        @media (prefers-color-scheme: dark) {
+        
+        .toolbar.scrolled {
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 0.5px solid rgba(255, 255, 255, 0.2); 
+        box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.1);
+        }
+            
+        body {
+            background-color: #000000;
+            color: #dae0e6;
+        }
+        .toolbar h1 {
+            color: #FFFFFF;
+            opacity: 0.8;
+        }
+            
+        .experimental {
+            color: #FFFFFF;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
+        }
+        .image-description {
+            color: rgba(255, 255, 255, 0.5); 
+        }
+        span {
+            color: #dae0e6;
+        }
+        .author-info, .author-info a, h1 {
+            color: #95c6ff;
+        }
+        p {
+            color: #dae0e6;
+        }
+        .summary-container {
+            background-color: #111212;
+            border: 0.5px solid rgba(255, 255, 255, 0.3); 
+            box-shadow: 0px 0px 25px rgba(118, 181, 255, 0.5);
+        }
+        .summary-container h4 {
+            filter: invert(0) brightness(100%) saturate(200%)
+        }
+        .summary-container .auto-note {
+            color: #ffffff;
+        }
+        .toolbar .summary-icon {
+            filter: invert(0) brightness(100%) saturate(200%)
+        }
+
+        .toolbar .summary-icon:hover {
+            filter: invert(0) brightness(100%) saturate(200%)
+        }
+    }
     </style>
 </head>
 <body>
+<div class="toolbar">
+    <h1>Jornal CV</h1>
+    <span class="experimental">Experimental</span>
+    <img src="https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/refs/heads/main/icon/ic_sum.svg" alt="Resumo" class="summary-icon" id="summarizeButton">
+</div>
 
-    <div class="toolbar">
-        <h1>Jornal CV</h1>
-        <span class="experimental">Experimental</span>
-        <img src="https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/refs/heads/main/icon/ic_sum.svg" alt="Resumo" class="summary-icon" id="summarizeButton">
-    </div>
 
     <div id="post-content" class="post-content"></div>
 
-    <div id="summaryMenu" class="summary-container">
-        <button class="summary-close" id="closeSummary">×</button>
-        <div class="summary-text" id="summaryText"></div>
-    </div>
+<script>
+function markdownToHTML(md) {
+    let html = md
+        .replace(/^###### (.*$)/gim, '<h6>$1</h6>')
+        .replace(/^##### (.*$)/gim, '<h5>$1</h5>')
+        .replace(/^#### (.*$)/gim, '<h4>$1</h4>')
+        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+        .replace(/\*\*([^*]+)\*\*/gim, '<strong>$1</strong>')
+        .replace(/\*([^*]+)\*/gim, '<em>$1</em>')
+        .replace(/\!\[([^\]]+)\]\(([^)]+)\)/gim, (match, p1, p2) => {
+            return `<div style="text-align: center;" class="content"><img src="${p2}" alt="${p1}"><span class="image-description">${p1}</span></div>`;
+        })
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2">$1</a>')
+        .replace(/^\- (.*$)/gim, '<ul><li>$1</li></ul>')
+        .replace(/(\n)/g, '<br>')
+        .replace(/^> \[!IMPORTANT\](.*$)/gim, '<div class="quote-card quote-important"><h3>IMPORTANT</h3><p>$1</p></div>')
+        .replace(/^> \[!NOTE\](.*$)/gim, '<div class="quote-card quote-note"><h3>NOTE</h3><p>$1</p></div>')
+        .replace(/^> \[!TIP\](.*$)/gim, '<div class="quote-card quote-tip"><h3>TIP</h3><p>$1</p></div>')
+        .replace(/^> \[!WARNING\](.*$)/gim, '<div class="quote-card quote-warning"><h3>WARNING</h3><p>$1</p></div>')
+        .replace(/^> (.*$)/gim, '<div class="quote-card quote-default"><h3>Citação</h3><p>$1</p></div>')
+        .replace(/```([^`]+)```/gim, '<div class="code-block"><button class="copy-button">Copiar</button><pre><code>$1</code></pre></div>');
+    return html;
+}
 
-    <script>
-        let summaryActive = false;
+function loadPost() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fileName = urlParams.get('file');
+    
+    if (fileName) {
+        fetch(`./posts/${fileName}.md`)
+            .then(response => {
+                if (!response.ok) { 
+                    window.location.href = "404.html";
+                    throw new Error("Arquivo não encontrado.");
+                }
+                return response.text();
+            })
+            .then(md => {
+                const authorInfo = extractAuthorInfo(md);
+                const postHTML = markdownToHTML(md.replace(/Info {[^}]+}/, ''));
+                const postContainer = document.getElementById('post-content');
+                const postDate = getFileDate(`./posts/${fileName}.md`);
+                
+                postContainer.innerHTML = `
+                    <article>
+                        <h1>${fileName.replace(/-/g, ' ').replace(/\b\w/g, char => {
+                        
+                            return char.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+                        })}</h1>
+                        <div class="author-info">
+                            <img src="${authorInfo.photo}" alt="${authorInfo.name}">
+                            <span>Por <a href="${authorInfo.profileUrl}">${authorInfo.name}</a></span>
+                        </div>
+                        <p class="post-meta">Publicado em ${postDate}</p>
+                        <div>${postHTML}</div>
+                    </article>
+                `;
+                addCopyButtonEventListeners();
+                document.querySelector('body').classList.add('loaded');
+            })
+            .catch(error => console.log('Erro ao carregar o post:', error));
+    } else {
+        window.location.href = "404.html";
+    }
+}
 
-        const summarizeButton = document.getElementById('summarizeButton');
-        const summaryContainer = document.getElementById('summaryMenu');
-        const closeSummaryButton = document.getElementById('closeSummary');
-        const summaryTextElement = document.getElementById('summaryText');
-
-        summarizeButton.addEventListener('click', function () {
-            if (summaryActive) {
-                summaryContainer.classList.remove('active');
-                summaryActive = false;
-            } else {
-                summaryContainer.classList.add('active');
-                summaryActive = true;
-                loadSummary();
-            }
-        });
-
-        closeSummaryButton.addEventListener('click', function () {
-            summaryContainer.classList.remove('active');
-            summaryActive = false;
-        });
-
-        function loadSummary() {
-            const postContent = document.getElementById('post-content').innerText;
-            const summary = summarizeText(postContent);
-            summaryTextElement.textContent = summary;
-        }
-
-        function summarizeText(content) {
-            let sentences = content.split('. ');
-            let summary = sentences.slice(0, 5).join('. ') + '.';
-            return summary;
-        }
-
-        // Função para carregar o conteúdo do post
-        function loadPost() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const fileName = urlParams.get('file');
-
-            if (fileName) {
-                fetch(`./posts/${fileName}.md`)
-                    .then(response => {
-                        if (!response.ok) {
-                            window.location.href = "404.html";
-                            throw new Error("Arquivo não encontrado.");
-                        }
-                        return response.text();
-                    })
-                    .then(md => {
-                        const postHTML = markdownToHTML(md);
-                        const postContainer = document.getElementById('post-content');
-                        postContainer.innerHTML = `
-                            <article>
-                                <h1>${fileName.replace(/-/g, ' ').replace(/\b\w/g, char => {
-                                    return char.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
-                                })}</h1>
-                                <div>${postHTML}</div>
-                            </article>
-                        `;
-                        document.querySelector('body').classList.add('loaded');
-                    })
-                    .catch(error => console.log('Erro ao carregar o post:', error));
-            } else {
-                window.location.href = "404.html";
-            }
-        }
-
-        // Função de conversão de markdown para HTML
-        function markdownToHTML(md) {
-            let html = md
-                .replace(/^###### (.*$)/gim, '<h6>$1</h6>')
-                .replace(/^##### (.*$)/gim, '<h5>$1</h5>')
-                .replace(/^#### (.*$)/gim, '<h4>$1</h4>')
-                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-                .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-                .replace(/\*\*([^*]+)\*\*/gim, '<strong>$1</strong>')
-                .replace(/\*([^*]+)\*/gim, '<em>$1</em>')
-                .replace(/\!\[([^\]]+)\]\(([^)]+)\)/gim, (match, p1, p2) => {
-                    return `<div style="text-align: center;" class="content"><img src="${p2}" alt="${p1}"><span class="image-description">${p1}</span></div>`;
+function addCopyButtonEventListeners() {
+    const copyButtons = document.querySelectorAll('.copy-button');
+    copyButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const code = button.nextElementSibling.innerText;
+            navigator.clipboard.writeText(code)
+                .then(() => {
+                    button.innerText = 'Copied!';
+                    setTimeout(() => {
+                        button.innerText = 'Copiar';
+                    }, 1500);
                 })
-                .replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2">$1</a>')
-                .replace(/^\- (.*$)/gim, '<ul><li>$1</li></ul>')
-                .replace(/(\n)/g, '<br>')
-                .replace(/```([^`]+)```/gim, '<div class="code-block"><button class="copy-button">Copiar</button><pre><code>$1</code></pre></div>');
-            return html;
-        }
+                .catch(() => alert('Erro ao copiar'));
+        });
+    });
+}
 
-        loadPost();
-    </script>
+function summarizeText(content) {
+    let sentences = content.split(". ");
+    let summary = sentences.slice(0, 2).join(". ") + (sentences.length > 2 ? "." : "");
+    return summary;
+}
+
+document.getElementById("summarizeButton").addEventListener("click", function() {
+    const postContent = document.getElementById("post-content");
+
+    const existingSummaryContainer = postContent.querySelector(".summary-container");
+
+    if (existingSummaryContainer) {
+        existingSummaryContainer.classList.remove('show');
+    } else {
+        const articleContent = postContent.querySelector("article").innerText;
+        const summary = summarizeText(articleContent); 
+
+        const summaryContainer = document.createElement("div");
+        summaryContainer.classList.add("summary-container");
+        summaryContainer.innerHTML = `
+            <h4>
+            <img src="https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/refs/heads/main/icon/ic_sum.svg" alt="Resumo">
+                 Summer
+            </h4>
+            <h5>
+            Resumo do texto
+            </h5>
+            <p>${summary}</p>
+            <p class="auto-note">*Resumo gerado automaticamente.</p>
+        `;
+        
+        postContent.prepend(summaryContainer);
+
+        window.scrollTo({
+            top: summaryContainer.offsetTop - 90,
+            behavior: 'smooth'
+        });
+
+        setTimeout(() => summaryContainer.classList.add('show'), 100);
+    }
+});
+
+function extractAuthorInfo(md) {
+    const authorMatch = md.match(/Info {\s*AuthorName: ([^\n]+)\s*AuthorUrlProfile: ([^\n]+)\s*AuthorPhoto: ([^\n]+)\s*}/);
+    if (authorMatch) {
+        return {
+            name: authorMatch[1].trim(),
+            profileUrl: authorMatch[2].trim(),
+            photo: authorMatch[3].trim()
+        };
+    }
+    return {
+        name: 'Desconhecido',
+        profileUrl: '#',
+        photo: 'https://via.placeholder.com/27'
+    };
+}
+
+function getFileDate(filePath) {
+    const fileStats = new Date();
+    return fileStats.toLocaleDateString();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const toolbar = document.querySelector('.toolbar');
+    
+    function updateToolbar() {
+        if (window.scrollY > 10) {
+            toolbar.classList.add('scrolled');  
+        } else {
+            toolbar.classList.remove('scrolled');  
+        }
+    }
+
+    window.addEventListener('scroll', updateToolbar);
+});
+
+loadPost();
+</script>
+
 </body>
 </html>
