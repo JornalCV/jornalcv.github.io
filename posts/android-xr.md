@@ -5,6 +5,7 @@ AuthorPhoto: https://cdn1.cdn-telegram.org/file/EuhcE9VYjU-9maVTbpnRc-94VicYGpc-
 Google, Samsung e Qualcomm se **uniram para desenvolver o novo sistema operacional chamado "[Android XR](https://www.google.com/search?q=Android+XR)"**, projetado para oferecer melhor integração com **[Inteligência Artificial](https://www.google.com/search?q=Inteligência+Artificial) (IA)** e otimizado especificamente para **óculos de realidade aumentada e realidade mista**. 
 
 O sistema terá uma **integração mais avançada com o [Gemini](https://www.google.com/search?q=Gemini)**, trazendo recursos aprimorados e novas funcionalidades voltadas para headsets de realidade estendida.
+
 ![Óculos de realidade aumentada Samsung](https://raw.githubusercontent.com/JornalCV/jornalcv.github.io/refs/heads/main/files/12211823112322.jpg)
 Como parte da colaboração, o **“[Project Moohan](https://news.samsung.com/global/unlock-the-infinite-possibilities-of-xr-with-galaxy-ai)” da Samsung** será o **primeiro dispositivo a utilizar o [Android XR](https://www.google.com/search?q=Android+XR)**. Com lançamento previsto para 2025, o aparelho promete ser um concorrente à altura do [Apple Vision Pro](https://www.apple.com/apple-vision-pro/). 
 
